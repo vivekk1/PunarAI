@@ -1,1 +1,183 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>यशवी केक - स्वाद और परंपरा</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #ffe5ec;
+            color: #6a0572;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #ff69b4;
+            padding: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin-right: 15px;
+        }
+
+        .container {
+            padding: 20px;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .cake-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: #ffebc2;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .cake-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 15px;
+            text-align: center;
+        }
+
+        img {
+            width: 100%;
+            max-width: 250px;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s;
+        }
+
+            img:hover {
+                transform: scale(1.05);
+            }
+       
+        .cake-gallery img {
+            width: 250px;
+            border-radius: 15px;
+            box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s;
+            margin: 10px;
+        }
+
+            .cake-gallery img:hover {
+                transform: scale(1.05);
+            }
+        .order-btn {
+            background-color: #ff4081;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            font-size: 18px;
+            margin-top: 10px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background 0.3s, transform 0.2s;
+            text-decoration: none;
+            display: block;
+        }
+
+            .order-btn:hover {
+                background-color: #e91e63;
+                transform: scale(1.05);
+            }
+
+        footer {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #ff69b4;
+            color: white;
+            font-size: 16px;
+        }
+    </style>
+    
+</head>
+<body>
+    <header>
+        <img src="img/logo1.webp" alt="यशवी केक लोगो" class="logo">
+        यशवी केक - प्यार और स्वाद का संगम
+    </header>
+    <div class="container">
+        <h2>हमारे कस्टम केक के साथ अपने खास पलों को यादगार बनाएं!</h2>
+        <p>हर केक को विशेष देखभाल और प्यार से बनाया जाता है। ताजा और शुद्ध सामग्री का उपयोग कर, हम आपको बेहतरीन स्वाद देने का प्रयास करते हैं।</p>
+        <!--<div class="cake-section">
+        <h3>हमारे खास केक</h3>
+        <div class="cake-gallery">
+            <img src="cake1.jpg" alt="केक 1">
+            <img src="cake2.jpg" alt="केक 2">
+            <img src="cake3.jpg" alt="केक 3">
+        </div>
+        <br>
+        <a id="order-btn" href="#" class="order-btn">अभी ऑर्डर करें</a>
+        <p id="thank-you" style="display:none; color:green; font-size:18px; margin-top:10px;">आपका ऑर्डर सफलतापूर्वक प्लेस हो गया! धन्यवाद!</p>
+    </div>-->
+        <div class="cake-section">
+            <h3>हमारे खास केक</h3>
+
+            <div class="cake-item">
+                <img src="img/red_velvet.webp" alt="Red Velvet Cake">
+                <a href="https://wa.me/919525008688?text=मैं%20Red%20Velvet%20केक%20(ID:RV001)%20₹500%20ऑर्डर%20करना%20चाहता%20हूं!" class="order-btn">Red Velvet - ₹500</a>
+            </div>
+            <div class="cake-item">
+                <img src="img/black_forest.webp" alt="Black Forest Cake">
+                <a href="https://wa.me/919525008688?text=मैं%20Black%20Forest%20केक%20(ID:BF002)%20₹450%20ऑर्डर%20करना%20चाहता%20हूं!" class="order-btn">Black Forest - ₹450</a>
+            </div>
+            <div class="cake-item">
+                <img src="img/vanilla.webp" alt="Vanilla Cake">
+                <a href="https://wa.me/919525008688?text=मैं%20Vanilla%20केक%20(ID:VN003)%20₹400%20ऑर्डर%20करना%20चाहता%20हूं!" class="order-btn">Vanilla - ₹400</a>
+            </div>
+            <div class="cake-item">
+                <img src="img/anniversary.webp" alt="Anniversary Cake">
+                <a href="https://wa.me/919525008688?text=मैं%20Anniversary%20केक%20(ID:AN004)%20₹700%20ऑर्डर%20करना%20चाहता%20हूं!" class="order-btn">Anniversary - ₹700</a>
+            </div>
+            <div class="cake-item">
+                <img src="img/birthday.webp" alt="Birthday Cake">
+                <a href="https://wa.me/919525008688?text=मैं%20Birthday%20केक%20(ID:BD005)%20₹600%20ऑर्डर%20करना%20चाहता%20हूं!" class="order-btn">Birthday - ₹600</a>
+            </div>
+        </div>
+    </div>
+    <footer>
+        &copy; 2025 यशवी केक | स्वाद और परंपरा का संगम
+    </footer>
+    <script>
+        document.getElementById('order-btn').addEventListener('click', function () {
+            let orderId = Math.floor(Math.random() * 1000000);
+            let message = `मैं यशवी केक से एक केक ऑर्डर करना चाहता हूं!\nऑर्डर आईडी: ${orderId}`;
+            let whatsappLink = `https://wa.me/918787391089?text=${encodeURIComponent(message)}`;
+
+            window.location.href = whatsappLink;
+            setTimeout(() => {
+                document.getElementById('thank-you').style.display = 'block';
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
 
