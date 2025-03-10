@@ -252,7 +252,10 @@
     <footer>
         &copy; 2025 यशवी केक | स्वाद और परंपरा का संगम
     </footer>
-    
+    <script>
+    let cakes = ["Red Velvet", "Black Forest", "Vanilla", "Anniversary", "Birthday"];
+    document.getElementById("specialCake").innerText = cakes[new Date().getDay()];
+</script>
 </body>
 </html>
 
