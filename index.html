@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PunarAI - AI Innovation</title>
     <style>
-      
         body {
             margin: 0;
             font-family: Arial, sans-serif;
@@ -13,33 +12,31 @@
             color: #ffffff;
             text-align: center;
         }
-       .logo {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    width: 100px;
-    height: auto;
-    filter: drop-shadow(0 0 10px rgba(162, 210, 255, 0.7));
-    background: rgba(10, 15, 42, 0.5);
-    border-radius: 50%;
-    padding: 5px;
-}
-
-@media (max-width: 768px) {
-    .logo {
-        width: 80px;
-        top: 5px;
-        left: 5px;
-    }
-}
-
-@media (max-width: 480px) {
-    .logo {
-        width: 60px;
-        top: 5px;
-        left: 5px;
-    }
-}
+        .logo {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 100px;
+            height: auto;
+            filter: drop-shadow(0 0 10px rgba(162, 210, 255, 0.7));
+            background: rgba(10, 15, 42, 0.5);
+            border-radius: 50%;
+            padding: 5px;
+        }
+        @media (max-width: 768px) {
+            .logo {
+                width: 80px;
+                top: 5px;
+                left: 5px;
+            }
+        }
+        @media (max-width: 480px) {
+            .logo {
+                width: 60px;
+                top: 5px;
+                left: 5px;
+            }
+        }
         .banner {
             width: 100%;
             height: 400px;
@@ -49,40 +46,31 @@
             align-items: center;
             position: relative;
         }
-
-      
-
         .banner-content {
             z-index: 1;
         }
-
         .banner h1 {
             font-size: 3em;
             text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
         }
-
         .content {
             padding: 40px 20px;
             max-width: 900px;
             margin: 0 auto;
         }
-
         .contact-section {
             background-color: #16213e;
             padding: 40px;
             margin-top: 40px;
         }
-
         .contact-info p {
             font-size: 1.1em;
         }
-
         .blog-section {
             padding: 40px;
             background-color: #0a0f2a;
             margin-top: 40px;
         }
-
         .blog-post {
             max-width: 350px;
             background-color: #16213e;
@@ -90,7 +78,6 @@
             border-radius: 5px;
             margin: 10px auto;
         }
-
         .learn-more {
             display: inline-block;
             margin-top: 15px;
@@ -102,15 +89,12 @@
             font-weight: bold;
             cursor: pointer;
         }
-
-            .learn-more:hover {
-                cursor: pointer;
-            }
-        /* New Chatbot CSS */
-        #chat-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
+        .learn-more:hover {
+            cursor: pointer;
+        }
+        /* Chatbot CSS */
+        .chat-container {
+            position: relative;
             width: 320px;
             height: 450px;
             background: #16213e;
@@ -118,9 +102,9 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
             display: flex;
             flex-direction: column;
-            z-index: 1000;
+            margin: 20px auto;
         }
-        #chat-header {
+        .chat-header {
             background: linear-gradient(135deg, #0a0f2a, #5b9bd5);
             color: #ffffff;
             padding: 10px;
@@ -128,14 +112,14 @@
             font-weight: bold;
             text-align: center;
         }
-        #chat-messages {
+        .chat-messages {
             flex: 1;
             padding: 15px;
             overflow-y: auto;
             background: #1a1a2e;
             color: #ffffff;
         }
-        #chat-input {
+        .chat-input {
             width: 100%;
             padding: 10px;
             border: none;
@@ -145,7 +129,7 @@
             border-radius: 0 0 10px 10px;
             outline: none;
         }
-        #chat-input::placeholder {
+        .chat-input::placeholder {
             color: #cccccc;
         }
         .message {
@@ -166,19 +150,79 @@
             color: #ffffff;
             margin-right: auto;
         }
-        #chat-messages::-webkit-scrollbar {
+        .chat-messages::-webkit-scrollbar {
             width: 6px;
         }
-        #chat-messages::-webkit-scrollbar-track {
+        .chat-messages::-webkit-scrollbar-track {
             background: #0a0f2a;
         }
-        #chat-messages::-webkit-scrollbar-thumb {
+        .chat-messages::-webkit-scrollbar-thumb {
             background: #5b9bd5;
             border-radius: 10px;
+        }
+        /* Navbar CSS */
+        nav {
+            background: linear-gradient(135deg, #0a0f2a, #5b9bd5);
+            padding: 10px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+        }
+        nav li {
+            margin: 0 15px;
+            position: relative;
+        }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.1em;
+        }
+        nav a:hover {
+            color: #f28c38;
+        }
+        nav li:hover > ul {
+            display: block;
+        }
+        nav ul ul {
+            display: none;
+            position: absolute;
+            background: #16213e;
+            padding: 10px;
+            border-radius: 5px;
+            list-style: none;
+            min-width: 150px;
+        }
+        nav ul ul li {
+            margin: 5px 0;
         }
     </style>
 </head>
 <body>
+    <nav>
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li>
+                <a href="#">Industries</a>
+                <ul>
+                    <li><a href="#education">Education</a></li>
+                    <li><a href="#manufacturing">Manufacturing</a></li>
+                    <li><a href="#restaurant">Restaurant</a></li>
+                </ul>
+            </li>
+            <li><a href="#blog">Blog</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+        </ul>
+    </nav>
+
     <div class="banner">
         <img src="img/PunarAI-logo.png" alt="PunarAI Logo" class="logo">
         <div class="banner-content">
@@ -196,20 +240,18 @@
         <p>With a vision beyond the stock market, PunarAI is committed to expanding AI solutions across multiple industries, including healthcare, finance, manufacturing, and more. We aspire to revolutionize businesses with intelligent automation and data-driven decision-making.</p>
         <a href="#contact" class="learn-more">Learn More</a>
     </div>
- <div class="content" id="founder-about">
-     <h2>About the Founder</h2>
-     <p><strong>Vivek Kumar</strong>, the founder of <strong>PunarAI</strong>, is a passionate software consultant and technologist with deep expertise in AI-driven stock market analysis and full-stack web development.</p>
 
-     <p>With a strong background in Blazor WebAssembly, ASP.NET Core, and Python-based AI, Vivek has worked on a wide range of real-world projects—from corporate ERP systems to intelligent market forecasting platforms. He brings a unique blend of technical proficiency, domain understanding, and a problem-solving mindset to the table.</p>
+    <div class="content" id="founder-about">
+        <h2>About the Founder</h2>
+        <p><strong>Vivek Kumar</strong>, the founder of <strong>PunarAI</strong>, is a passionate software consultant and technologist with deep expertise in AI-driven stock market analysis and full-stack web development.</p>
+        <p>With a strong background in Blazor WebAssembly, ASP.NET Core, and Python-based AI, Vivek has worked on a wide range of real-world projects—from corporate ERP systems to intelligent market forecasting platforms. He brings a unique blend of technical proficiency, domain understanding, and a problem-solving mindset to the table.</p>
+        <p>Driven by a vision to democratize intelligent financial decision-making, he launched <strong>PunarAI</strong> — an innovative platform that leverages Machine Learning and Deep Learning to simplify complex stock market insights for everyday investors.</p>
+        <blockquote style="font-style: italic; border-left: 4px solid #f28c38; padding-left: 15px; color: #ccc; margin: 20px 0;">
+            “Technology should empower clarity, not complexity. With PunarAI, I aim to make financial intelligence accessible to all.” — Vivek Kumar
+        </blockquote>
+        <p>When he's not coding or experimenting with AI models, Vivek is a curious learner, mentor, and entrepreneur — always exploring ways to bridge technology and real-world needs.</p>
+    </div>
 
-     <p>Driven by a vision to democratize intelligent financial decision-making, he launched <strong>PunarAI</strong> — an innovative platform that leverages Machine Learning and Deep Learning to simplify complex stock market insights for everyday investors.</p>
-
-     <blockquote style="font-style: italic; border-left: 4px solid #f28c38; padding-left: 15px; color: #ccc; margin: 20px 0;">
-         “Technology should empower clarity, not complexity. With PunarAI, I aim to make financial intelligence accessible to all.” — Vivek Kumar
-     </blockquote>
-
-     <p>When he's not coding or experimenting with AI models, Vivek is a curious learner, mentor, and entrepreneur — always exploring ways to bridge technology and real-world needs.</p>
- </div>
     <div class="content" id="founder-message">
         <h2>Founder’s Message</h2>
         <p>At PunarAI, we believe that AI is not just a tool; it is a catalyst for transformation. Businesses that embrace AI will not only optimize efficiency but will also unlock new opportunities for growth and innovation.</p>
@@ -218,48 +260,81 @@
         <a href="#contact" class="learn-more">Learn More</a>
     </div>
 
+    <div class="content" id="education">
+        <h2>Education Industry Bot</h2>
+        <p>Demo: Ask about student details, courses, or university info.</p>
+        <div class="chat-container" id="chat-container-education">
+            <div class="chat-header">Education Chatbot</div>
+            <div class="chat-messages" id="chat-messages-education"></div>
+            <input type="text" class="chat-input" id="chat-input-education" placeholder="Ask about student details..." onkeypress="if(event.key === 'Enter') sendEducationMessage()">
+        </div>
+        <a href="#pricing" class="learn-more">Upgrade to Full Version</a>
+    </div>
+
+    <div class="content" id="manufacturing">
+        <h2>Manufacturing Industry Bot</h2>
+        <p>Demo: Query inventory, production stats, or supply chain insights.</p>
+        <div class="chat-container" id="chat-container-manufacturing">
+            <div class="chat-header">Manufacturing Chatbot</div>
+            <div class="chat-messages" id="chat-messages-manufacturing"></div>
+            <input type="text" class="chat-input" id="chat-input-manufacturing" placeholder="Ask about inventory or production..." onkeypress="if(event.key === 'Enter') sendManufacturingMessage()">
+        </div>
+        <a href="#pricing" class="learn-more">Upgrade to Full Version</a>
+    </div>
+
+    <div class="content" id="restaurant">
+        <h2>Restaurant Industry Bot</h2>
+        <p>Demo: Check menu items, reservations, or sales reports.</p>
+        <div class="chat-container" id="chat-container-restaurant">
+            <div class="chat-header">Restaurant Chatbot</div>
+            <div class="chat-messages" id="chat-messages-restaurant"></div>
+            <input type="text" class="chat-input" id="chat-input-restaurant" placeholder="Ask about menu or reservations..." onkeypress="if(event.key === 'Enter') sendRestaurantMessage()">
+        </div>
+        <a href="#pricing" class="learn-more">Upgrade to Full Version</a>
+    </div>
+
+    <div class="content" id="pricing">
+        <h2>Pricing Plans</h2>
+        <p>Free Demo: Try our industry-specific bots above.</p>
+        <p>Pro: ₹999/month - Full access, custom data integration.</p>
+        <p>Enterprise: Contact for quote - Scalable for large teams.</p>
+        <a href="#contact" class="learn-more">Sign Up Now</a>
+    </div>
+
     <div class="contact-section" id="contact">
         <h2>Contact Us</h2>
         <div class="contact-info">
-            
+            <p>Email: info@punarai.com</p>
             <p>Phone: +91-9910021039</p>
         </div>
     </div>
-<div class="coming-soon-section" id="coming-soon">
+
+    <div class="coming-soon-section" id="coming-soon">
         <h2>🚀 Coming Soon: PunarAI App</h2>
         <p>We are working on something amazing! Our new AI-powered stock market analysis app is launching soon.</p>
         <p>Stay tuned for updates and early access.</p>
         <a href="#contact" class="learn-more">Get Notified</a>
     </div>
+
     <div class="blog-section" id="blog">
         <h2>Blog</h2>
         <div class="blog-post">
             <h3>Introduction to AI in Business</h3>
-             <a href="introbl.html">
-     <p>Learn how AI is revolutionizing business operations with predictive analytics.</p>
- </a>
+            <a href="introbl.html"><p>Learn how AI is revolutionizing business operations with predictive analytics.</p></a>
         </div>
         <div class="blog-post">
             <h3>Future of AI in 2025</h3>
-            <a href="futureai.html">
-            <p>Explore the trends and predictions for AI technology in the coming year.</p>
-            </a>
+            <a href="futureai.html"><p>Explore the trends and predictions for AI technology in the coming year.</p></a>
         </div>
     </div>
-    <!-- Chatbot UI -->
-    <div id="chat-container">
-        <div id="chat-header">PunarAI Chatbot</div>
-        <div id="chat-messages"></div>
-        <input type="text" id="chat-input" placeholder="Ask about your student details..." onkeypress="if(event.key === 'Enter') sendMessage()">
-    </div>
-    <!-- JavaScript for Chatbot -->
+
     <script>
-        async function sendMessage() {
-            const input = document.getElementById('chat-input');
+        async function sendEducationMessage() {
+            const input = document.getElementById('chat-input-education');
             const message = input.value.trim();
             if (!message) return;
 
-            const messagesDiv = document.getElementById('chat-messages');
+            const messagesDiv = document.getElementById('chat-messages-education');
             messagesDiv.innerHTML += `<div class="message user-message">${message}</div>`;
             input.value = '';
 
@@ -269,6 +344,60 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         rollno: '2013308',
+                        message: message
+                    })
+                });
+                const data = await response.json();
+                const reply = data.reply || 'Sorry, something went wrong.';
+                messagesDiv.innerHTML += `<div class="message bot-message">${reply}</div>`;
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            } catch (error) {
+                messagesDiv.innerHTML += `<div class="message bot-message">Error: Could not connect to server.</div>`;
+            }
+        }
+
+        async function sendManufacturingMessage() {
+            const input = document.getElementById('chat-input-manufacturing');
+            const message = input.value.trim();
+            if (!message) return;
+
+            const messagesDiv = document.getElementById('chat-messages-manufacturing');
+            messagesDiv.innerHTML += `<div class="message user-message">${message}</div>`;
+            input.value = '';
+
+            try {
+                const response = await fetch('https://your-ngrok-or-server/api/manufacturing-chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        factoryID: 'default-demo-id',
+                        message: message
+                    })
+                });
+                const data = await response.json();
+                const reply = data.reply || 'Sorry, something went wrong.';
+                messagesDiv.innerHTML += `<div class="message bot-message">${reply}</div>`;
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            } catch (error) {
+                messagesDiv.innerHTML += `<div class="message bot-message">Error: Could not connect to server.</div>`;
+            }
+        }
+
+        async function sendRestaurantMessage() {
+            const input = document.getElementById('chat-input-restaurant');
+            const message = input.value.trim();
+            if (!message) return;
+
+            const messagesDiv = document.getElementById('chat-messages-restaurant');
+            messagesDiv.innerHTML += `<div class="message user-message">${message}</div>`;
+            input.value = '';
+
+            try {
+                const response = await fetch('https://your-ngrok-or-server/api/restaurant-chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        restaurantID: 'default-demo-id',
                         message: message
                     })
                 });
