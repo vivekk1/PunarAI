@@ -106,6 +106,76 @@
             .learn-more:hover {
                 cursor: pointer;
             }
+        /* New Chatbot CSS */
+        #chat-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 320px;
+            height: 450px;
+            background: #16213e;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+        }
+        #chat-header {
+            background: linear-gradient(135deg, #0a0f2a, #5b9bd5);
+            color: #ffffff;
+            padding: 10px;
+            border-radius: 10px 10px 0 0;
+            font-weight: bold;
+            text-align: center;
+        }
+        #chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background: #1a1a2e;
+            color: #ffffff;
+        }
+        #chat-input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background: #0a0f2a;
+            color: #ffffff;
+            border-top: 1px solid #5b9bd5;
+            border-radius: 0 0 10px 10px;
+            outline: none;
+        }
+        #chat-input::placeholder {
+            color: #cccccc;
+        }
+        .message {
+            margin: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        .user-message {
+            background: #f28c38;
+            color: #ffffff;
+            margin-left: auto;
+            text-align: right;
+        }
+        .bot-message {
+            background: #5b9bd5;
+            color: #ffffff;
+            margin-right: auto;
+        }
+        #chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+        #chat-messages::-webkit-scrollbar-track {
+            background: #0a0f2a;
+        }
+        #chat-messages::-webkit-scrollbar-thumb {
+            background: #5b9bd5;
+            border-radius: 10px;
+        }
     </style>
 </head>
 <body>
@@ -176,5 +246,41 @@
             </a>
         </div>
     </div>
+    <!-- Chatbot UI -->
+    <div id="chat-container">
+        <div id="chat-header">PunarAI Chatbot</div>
+        <div id="chat-messages"></div>
+        <input type="text" id="chat-input" placeholder="Ask about your student details..." onkeypress="if(event.key === 'Enter') sendMessage()">
+    </div>
+    <!-- JavaScript for Chatbot -->
+    <script>
+        async function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            if (!message) return;
+
+            const messagesDiv = document.getElementById('chat-messages');
+            messagesDiv.innerHTML += `<div class="message user-message">${message}</div>`;
+            input.value = '';
+
+            try {
+                const response = await fetch('https://54a0db87adb9.ngrok-free.app/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        rollno: '2013308',
+                        message: message
+                    })
+                });
+                const data = await response.json();
+                const reply = data.reply || 'Sorry, something went wrong.';
+                messagesDiv.innerHTML += `<div class="message bot-message">${reply}</div>`;
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            } catch (error) {
+                messagesDiv.innerHTML += `<div class="message bot-message">Error: Could not connect to server.</div>`;
+            }
+        }
+    </script>
 </body>
 </html>
+
