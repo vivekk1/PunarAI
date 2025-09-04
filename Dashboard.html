@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Punarai – Portfolio & AI Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        html, body {
+            font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+        }
+
+        .card {
+            @apply bg-white rounded-2xl shadow-md border border-gray-100;
+        }
+
+        .btn {
+            @apply inline-flex items-center justify-center rounded-xl px-4 py-2 font-medium shadow-sm;
+        }
+
+        .btn-primary {
+            @apply bg-indigo-600 text-white hover:bg-indigo-700;
+        }
+
+        .btn-soft {
+            @apply bg-gray-100 text-gray-900 hover:bg-gray-200;
+        }
+
+        .chip {
+            @apply text-xs px-2 py-0.5 rounded-full bg-gray-100;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+    <!-- Header -->
+    <header class="sticky top-0 z-30 bg-white/80 backdrop-blur border-b border-gray-100">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="h-9 w-9 rounded-xl bg-indigo-600 text-white grid place-items-center font-semibold">P</div>
+                <div>
+                    <div class="text-lg font-semibold">Punarai</div>
+                    <div class="text-xs text-gray-500 -mt-1">Portfolio & AI Assistant</div>
+                </div>
+            </div>
+            <nav class="flex items-center gap-2">
+                <button id="btn-logout" class="btn btn-soft hidden">Logout</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-8">
+
+        <!-- Auth Card -->
+        <section id="auth-card" class="card p-6 max-w-md mx-auto">
+            <h1 class="text-2xl font-semibold">Welcome back</h1>
+            <p class="text-gray-500 mt-1">Sign in to manage your equity portfolio and chat with the AI agent.</p>
+
+            <form id="login-form" class="mt-6 grid gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Email</label>
+                    <input id="email" type="email" class="mt-1 w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500" placeholder="you@punarai.com" required />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Password</label>
+                    <input id="password" type="password" class="mt-1 w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500" placeholder="••••••••" required />
+                </div>
+                <button class="btn btn-primary">Sign in</button>
+            </form>
+        </section>
+
+        <!-- Dashboard -->
+        <section id="dashboard" class="hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="card p-6 lg:col-span-2">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-xl font-semibold">Your Portfolio</h2>
+                        <div class="text-xs text-gray-500">User: <span id="me-email" class="font-medium"></span></div>
+                    </div>
+
+                    <form id="add-holding-form" class="mt-5 grid grid-cols-1 sm:grid-cols-5 gap-3">
+                        <input id="symbol" class="sm:col-span-2 rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g. TCS, RELIANCE, INFY" />
+                        <input id="qty" type="number" min="1" step="1" class="rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500" placeholder="Qty" />
+                        <input id="avgprice" type="number" min="0" step="0.01" class="rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500" placeholder="Avg. Price" />
+                        <button class="btn btn-primary">Add / Update</button>
+                    </form>
+
+                    <div class="mt-5 overflow-hidden rounded-2xl border border-gray-100">
+                        <table class="w-full text-sm">
+                            <thead class="bg-gray-50 text-gray-600">
+                                <tr>
+                                    <th class="text-left p-3">Symbol</th>
+                                    <th class="text-right p-3">Qty</th>
+                                    <th class="text-right p-3">Avg Price</th>
+                                    <th class="text-right p-3">Current</th>
+                                    <th class="text-right p-3">P/L</th>
+                                    <th class="p-3"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="holdings-body" class="divide-y divide-gray-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card p-6">
+                    <h3 class="font-semibold">Shortcuts</h3>
+                    <div class="mt-3 grid gap-2">
+                        <button id="btn-refresh" class="btn btn-soft w-full">Refresh Holdings</button>
+                        <button id="btn-rebalance" class="btn btn-soft w-full">Ask: Rebalance Advice</button>
+                        <button id="btn-risk" class="btn btn-soft w-full">Ask: Risk Check</button>
+                    </div>
+                    <div class="mt-6">
+                        <div class="text-xs text-gray-500 mb-1">Status</div>
+                        <div id="status" class="chip">Idle</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chatbot Panel -->
+            <div class="card p-6 mt-6">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-semibold">AI Portfolio Assistant</h2>
+                    <div class="text-xs text-gray-500">Ask things like: "Should I hold Reliance long term?"</div>
+                </div>
+
+                <div id="chat" class="mt-4 h-[360px] overflow-y-auto bg-gray-50 rounded-2xl p-4 space-y-3 border border-gray-100"></div>
+
+                <form id="chat-form" class="mt-4 flex gap-3">
+                    <input id="chat-input" class="flex-1 rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500" placeholder="Type your question..." />
+                    <button class="btn btn-primary">Send</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer class="max-w-6xl mx-auto px-4 py-10 text-center text-xs text-gray-500">
+        © <span id="year"></span> Punarai. All rights reserved.
+    </footer>
+
+    <script>
+        const API_BASE = "https://781d10627733.ngrok-free.app/api"; // update as needed
+
+        const qs = (s) => document.querySelector(s);
+        const ce = (t, c = "") => { const e = document.createElement(t); if (c) e.className = c; return e; };
+        const token = () => localStorage.getItem("jwt") || "";
+        const setStatus = (t) => qs('#status').innerText = t;
+
+        function showAuth(show) {
+            qs('#auth-card').classList.toggle('hidden', !show);
+            qs('#dashboard').classList.toggle('hidden', show);
+        }
+
+        function fmt(n) { return new Intl.NumberFormat('en-IN', { maximumFractionDigits: 2 }).format(n); }
+
+        function chatBubble(text, who) {
+            const row = ce('div', 'flex ' + (who === 'me' ? 'justify-end' : 'justify-start'));
+            const b = ce('div', 'max-w-[80%] rounded-2xl px-4 py-2 ' + (who === 'me' ? 'bg-indigo-600 text-white' : 'bg-white border border-gray-200'));
+            b.innerText = text; row.appendChild(b); qs('#chat').appendChild(row); qs('#chat').scrollTop = qs('#chat').scrollHeight;
+        }
+
+        // ------- auth -------
+        qs('#login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = qs('#email').value.trim();
+            const password = qs('#password').value;
+            setStatus('Signing in...');
+            try {
+                const res = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'ngrok-skip-browser-warning': 'true'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                if (!res.ok) {
+                    throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+                }
+
+                const data = await res.json();
+                if (data.token) {
+                    localStorage.setItem('jwt', data.token);
+                    qs('#me-email').innerText = email;
+                    showAuth(false);
+                    setStatus('Signed in');
+                    qs('#btn-logout').classList.remove('hidden');
+                    await loadHoldings();
+                } else {
+                    alert(data.error || 'Login failed');
+                    setStatus('Idle');
+                }
+            } catch (err) {
+                console.error('Login error:', err);
+                setStatus('Login error');
+                alert('Login error: ' + err.message);
+            }
+        });
+
+        qs('#btn-logout').addEventListener('click', () => {
+            localStorage.removeItem('jwt');
+            showAuth(true);
+            qs('#btn-logout').classList.add('hidden');
+            setStatus('Logged out');
+        });
+
+        // ------- holdings -------
+        async function loadHoldings() {
+            const t = token();
+            if (!t) {
+                console.error("No token!");
+                setStatus('No token - please login');
+                return;
+            }
+
+            setStatus('Loading holdings...');
+            try {
+                const res = await fetch(`${API_BASE}/portfolio/holdings`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${t}`,
+                        'ngrok-skip-browser-warning': 'true',
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                console.log('Response status:', res.status);
+                console.log('Response headers:', res.headers);
+
+                if (!res.ok) {
+                    throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+                }
+
+                const text = await res.text();
+                console.log("Raw holdings response:", text.substring(0, 200) + '...');
+
+                // Check if response is HTML (ngrok warning page)
+                if (text.trim().startsWith('<!DOCTYPE')) {
+                    throw new Error('Received HTML instead of JSON - ngrok browser warning issue');
+                }
+
+                const data = JSON.parse(text);
+                const tbody = qs('#holdings-body');
+                tbody.innerHTML = '';
+
+                if (!data.holdings || !data.holdings.length) {
+                    tbody.innerHTML = "<tr><td colspan='6' class='p-3 text-sm text-gray-500'>No holdings found</td></tr>";
+                    setStatus('No holdings');
+                    return;
+                }
+
+                data.holdings.forEach(h => {
+                    const tr = ce('tr');
+                    tr.innerHTML = `
+                        <td class='p-3 font-medium'>${h.symbol}</td>
+                        <td class='p-3 text-right'>${fmt(h.quantity)}</td>
+                        <td class='p-3 text-right'>₹${fmt(h.avg_price)}</td>
+                        <td class='p-3 text-right'>${h.current_price ? '₹' + fmt(h.current_price) : '-'}</td>
+                        <td class='p-3 text-right'>${h.current_price ? (h.current_price - h.avg_price > 0 ? '<span class="text-emerald-600">▲</span>' : '<span class="text-rose-600">▼</span>') + ' ₹' + fmt((h.current_price - h.avg_price) * h.quantity) : '-'}</td>
+                        <td class='p-3 text-right'><button class='btn btn-soft text-xs' data-del='${h.symbol}'>Remove</button></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+                tbody.querySelectorAll('button[data-del]').forEach(btn => {
+                    btn.addEventListener('click', async () => {
+                        const sym = btn.getAttribute('data-del');
+                        try {
+                            await fetch(`${API_BASE}/portfolio/holding`, {
+                                method: 'DELETE',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': `Bearer ${t}`,
+                                    'ngrok-skip-browser-warning': 'true'
+                                },
+                                body: JSON.stringify({ symbol: sym })
+                            });
+                            await loadHoldings();
+                        } catch (err) {
+                            console.error('Delete error:', err);
+                            alert('Error deleting holding');
+                        }
+                    });
+                });
+                setStatus('Holdings loaded');
+            } catch (err) {
+                console.error("Error loading holdings:", err);
+                setStatus('Error loading');
+                alert('Error loading holdings: ' + err.message);
+            }
+        }
+
+        // ------- add holding -------
+        qs('#add-holding-form').addEventListener('submit', async e => {
+            e.preventDefault();
+            const symbol = qs('#symbol').value.trim().toUpperCase();
+            const quantity = parseFloat(qs('#qty').value);
+            const avg_price = parseFloat(qs('#avgprice').value);
+
+            if (!symbol || !quantity || !avg_price) {
+                alert('Enter symbol, qty, avg price');
+                return;
+            }
+
+            setStatus('Saving holding...');
+            try {
+                const res = await fetch(`${API_BASE}/portfolio/holding`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token()}`,
+                        'ngrok-skip-browser-warning': 'true'
+                    },
+                    body: JSON.stringify({ symbol, quantity, avg_price })
+                });
+
+                if (!res.ok) {
+                    const errorText = await res.text();
+                    throw new Error(`HTTP ${res.status}: ${errorText}`);
+                }
+
+                const data = await res.json();
+                qs('#symbol').value = '';
+                qs('#qty').value = '';
+                qs('#avgprice').value = '';
+                await loadHoldings();
+                setStatus('Holding saved');
+            } catch (err) {
+                console.error('Save error:', err);
+                setStatus('Save error');
+                alert('Error saving holding: ' + err.message);
+            }
+        });
+
+        // ------- chatbot -------
+        qs('#chat-form').addEventListener('submit', async e => {
+            e.preventDefault();
+            const q = qs('#chat-input').value.trim();
+            if (!q) return;
+
+            chatBubble(q, 'me');
+            qs('#chat-input').value = '';
+            setStatus('Thinking...');
+
+            try {
+                const res = await fetch(`${API_BASE}/agent/analyze`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token()}`,
+                        'ngrok-skip-browser-warning': 'true'
+                    },
+                    body: JSON.stringify({ question: q })
+                });
+
+                if (!res.ok) {
+                    throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+                }
+
+                const data = await res.json();
+                chatBubble(data.reply || (data.error || 'Something went wrong'), 'bot');
+                setStatus('Idle');
+            } catch (err) {
+                console.error('Chat error:', err);
+                setStatus('Chat error');
+                chatBubble('Error in AI response: ' + err.message, 'bot');
+            }
+        });
+        qs('#btn-refresh').addEventListener('click', loadHoldings);
+        qs('#btn-rebalance').addEventListener('click', () => { qs('#chat-input').value = 'How should I rebalance my portfolio this month?'; qs('#chat-form').dispatchEvent(new Event('submit')); });
+        qs('#btn-risk').addEventListener('click', () => { qs('#chat-input').value = 'What is my overall risk and how can I reduce drawdowns?'; qs('#chat-form').dispatchEvent(new Event('submit')); });
+
+        document.getElementById('year').innerText = new Date().getFullYear();
+        if (token()) { showAuth(false); qs('#btn-logout').classList.remove('hidden'); loadHoldings(); }
+    </script>
+</body>
+</html>
