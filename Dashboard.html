@@ -54,23 +54,58 @@
     </header>
 
     <main class="max-w-6xl mx-auto px-4 py-8">
-
         <!-- Auth Card -->
         <section id="auth-card" class="card p-6 max-w-md mx-auto">
-            <h1 class="text-2xl font-semibold">Welcome back</h1>
-            <p class="text-gray-500 mt-1">Sign in to manage your equity portfolio and chat with the AI agent.</p>
+            <div class="flex justify-center gap-4 mb-6">
+                <button id="btn-show-login" class="btn btn-soft font-semibold">Sign In</button>
+                <button id="btn-show-register" class="btn btn-soft">Register</button>
+            </div>
 
-            <form id="login-form" class="mt-6 grid gap-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Email</label>
-                    <input id="email" type="email" class="mt-1 w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500" placeholder="you@punarai.com" required />
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Password</label>
-                    <input id="password" type="password" class="mt-1 w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500" placeholder="••••••••" required />
-                </div>
-                <button class="btn btn-primary">Sign in</button>
-            </form>
+            <!-- Login Form -->
+            <div id="login-form-container">
+                <h1 class="text-2xl font-semibold">Welcome back</h1>
+                <p class="text-gray-500 mt-1">Sign in to manage your equity portfolio and chat with the AI agent.</p>
+                <form id="login-form" class="mt-6 grid gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Email</label>
+                        <input id="email-login" type="email" class="mt-1 w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500" placeholder="you@punarai.com" required />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Password</label>
+                        <input id="password-login" type="password" class="mt-1 w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500" placeholder="••••••••" required />
+                    </div>
+                    <button class="btn btn-primary">Sign in</button>
+                </form>
+            </div>
+
+            <!-- Register Form -->
+            <div id="register-form-container" class="hidden">
+                <h1 class="text-2xl font-semibold">Create an Account</h1>
+                <p class="text-gray-500 mt-1">Register to start managing your equity portfolio and access the AI assistant.</p>
+                <form id="register-form" class="mt-6 grid gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Name</label>
+                        <input id="name-register" type="text" class="mt-1 w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500" placeholder="Your Name" required />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Email</label>
+                        <input id="email-register" type="email" class="mt-1 w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500" placeholder="you@punarai.com" required />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Mobile Number</label>
+                        <input id="mobile-register" type="tel" class="mt-1 w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g. +91 1234567890" required />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Password</label>
+                        <input id="password-register" type="password" class="mt-1 w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500" placeholder="••••••••" required />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Confirm Password</label>
+                        <input id="confirm-password" type="password" class="mt-1 w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500" placeholder="••••••••" required />
+                    </div>
+                    <button class="btn btn-primary">Register</button>
+                </form>
+            </div>
         </section>
 
         <!-- Dashboard -->
@@ -103,6 +138,11 @@
                             </thead>
                             <tbody id="holdings-body" class="divide-y divide-gray-100"></tbody>
                         </table>
+                    </div>
+                    <div id="portfolio-summary" class="mt-3 flex justify-end gap-4 text-sm">
+                        <div>Invested: ₹<span id="total-invested"></span></div>
+                        <div>Value: ₹<span id="total-value"></span></div>
+                        <div>P/L: <span id="total-pl"></span></div>
                     </div>
                 </div>
 
@@ -162,11 +202,26 @@
             b.innerText = text; row.appendChild(b); qs('#chat').appendChild(row); qs('#chat').scrollTop = qs('#chat').scrollHeight;
         }
 
-        // ------- auth -------
+        // ------- toggle forms -------
+        qs('#btn-show-login').addEventListener('click', () => {
+            qs('#login-form-container').classList.remove('hidden');
+            qs('#register-form-container').classList.add('hidden');
+            qs('#btn-show-login').classList.add('font-semibold');
+            qs('#btn-show-register').classList.remove('font-semibold');
+        });
+
+        qs('#btn-show-register').addEventListener('click', () => {
+            qs('#register-form-container').classList.remove('hidden');
+            qs('#login-form-container').classList.add('hidden');
+            qs('#btn-show-register').classList.add('font-semibold');
+            qs('#btn-show-login').classList.remove('font-semibold');
+        });
+
+        // ------- login -------
         qs('#login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = qs('#email').value.trim();
-            const password = qs('#password').value;
+            const email = qs('#email-login').value.trim();
+            const password = qs('#password-login').value;
             setStatus('Signing in...');
             try {
                 const res = await fetch(`${API_BASE}/auth/login`, {
@@ -201,6 +256,79 @@
             }
         });
 
+        // ------- register -------
+
+        qs('#register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = qs('#name-register').value.trim();
+            const email = qs('#email-register').value.trim();
+            const mobileNo = qs('#mobile-register').value.trim();
+            const password = qs('#password-register').value;
+            const confirmPassword = qs('#confirm-password').value;
+
+            // Client-side validation
+            if (!name) {
+                alert('Name is required');
+                setStatus('Name is required');
+                return;
+            }
+            if (password !== confirmPassword) {
+                alert('Passwords do not match');
+                setStatus('Passwords do not match');
+                return;
+            }
+            if (password.length < 8) {
+                alert('Password must be at least 8 characters long');
+                setStatus('Password too short');
+                return;
+            }
+            if (!mobileNo.match(/^\+?\d{10,12}$/)) {
+                alert('Enter a valid mobile number (10-12 digits)');
+                setStatus('Invalid mobile number');
+                return;
+            }
+
+            setStatus('Registering...');
+            try {
+                const res = await fetch(`${API_BASE}/auth/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'ngrok-skip-browser-warning': 'true'
+                    },
+                    body: JSON.stringify({ name, email, mobileNo, password })
+                });
+
+                if (!res.ok) {
+                    const errorText = await res.text();
+                    throw new Error(`HTTP ${res.status}: ${errorText || 'Unknown error'}`);
+                }
+
+                const data = await res.json();
+                if (data.success || data.message === 'User registered successfully') { // Flexible success check
+                    setStatus('Register successfully');
+                    alert('Registration successful! Please sign in.');
+                    qs('#name-register').value = '';
+                    qs('#email-register').value = '';
+                    qs('#mobile-register').value = '';
+                    qs('#password-register').value = '';
+                    qs('#confirm-password').value = '';
+                    qs('#btn-show-login').click(); // Switch to login form
+                } else {
+                    alert(data.error || 'Registration failed');
+                    setStatus('Registration failed');
+                }
+            } catch (err) {
+
+                console.error('Registration error:', err);
+                setStatus('Registration error');
+                let errorMessage = err.message;
+                if (err.message.includes('Failed to fetch')) {
+                    errorMessage = 'Unable to connect to the server. Please check your internet connection or try again later.';
+                }
+                alert('Registration error: ' + errorMessage);
+            }
+        });
         qs('#btn-logout').addEventListener('click', () => {
             localStorage.removeItem('jwt');
             showAuth(true);
@@ -238,7 +366,6 @@
                 const text = await res.text();
                 console.log("Raw holdings response:", text.substring(0, 200) + '...');
 
-                // Check if response is HTML (ngrok warning page)
                 if (text.trim().startsWith('<!DOCTYPE')) {
                     throw new Error('Received HTML instead of JSON - ngrok browser warning issue');
                 }
@@ -253,18 +380,32 @@
                     return;
                 }
 
+                let total_invested = 0;
+                let total_value = 0;
+
                 data.holdings.forEach(h => {
                     const tr = ce('tr');
+                    const pl = h.current_price ? (h.current_price - h.avg_price) * h.quantity : null;
                     tr.innerHTML = `
-                        <td class='p-3 font-medium'>${h.symbol}</td>
-                        <td class='p-3 text-right'>${fmt(h.quantity)}</td>
-                        <td class='p-3 text-right'>₹${fmt(h.avg_price)}</td>
-                        <td class='p-3 text-right'>${h.current_price ? '₹' + fmt(h.current_price) : '-'}</td>
-                        <td class='p-3 text-right'>${h.current_price ? (h.current_price - h.avg_price > 0 ? '<span class="text-emerald-600">▲</span>' : '<span class="text-rose-600">▼</span>') + ' ₹' + fmt((h.current_price - h.avg_price) * h.quantity) : '-'}</td>
-                        <td class='p-3 text-right'><button class='btn btn-soft text-xs' data-del='${h.symbol}'>Remove</button></td>
-                    `;
+                                <td class='p-3 font-medium'>${h.symbol}</td>
+                                <td class='p-3 text-right'>${fmt(h.quantity)}</td>
+                                <td class='p-3 text-right'>₹${fmt(h.avg_price)}</td>
+                                <td class='p-3 text-right'>${h.current_price ? '₹' + fmt(h.current_price) : '-'}</td>
+                                <td class='p-3 text-right'>${pl !== null ? (pl > 0 ? '<span class="text-emerald-600">▲ ₹' : '<span class="text-rose-600">▼ ₹') + fmt(Math.abs(pl)) + '</span>' : '-'}</td>
+                                <td class='p-3 text-right'><button class='btn btn-soft text-xs' data-del='${h.symbol}'>Remove</button></td>
+                            `;
                     tbody.appendChild(tr);
+
+                    total_invested += h.quantity * h.avg_price;
+                    if (h.current_price) total_value += h.quantity * h.current_price;
                 });
+
+                qs('#total-invested').innerText = fmt(total_invested);
+                qs('#total-value').innerText = fmt(total_value);
+                const total_pl = total_value - total_invested;
+                const pl_span = qs('#total-pl');
+                pl_span.innerText = (total_pl > 0 ? '+₹' : (total_pl < 0 ? '-₹' : '₹')) + fmt(Math.abs(total_pl));
+                pl_span.className = total_pl > 0 ? 'text-emerald-600' : (total_pl < 0 ? 'text-rose-600' : 'text-gray-600');
 
                 tbody.querySelectorAll('button[data-del]').forEach(btn => {
                     btn.addEventListener('click', async () => {
@@ -370,12 +511,25 @@
                 chatBubble('Error in AI response: ' + err.message, 'bot');
             }
         });
+
         qs('#btn-refresh').addEventListener('click', loadHoldings);
-        qs('#btn-rebalance').addEventListener('click', () => { qs('#chat-input').value = 'How should I rebalance my portfolio this month?'; qs('#chat-form').dispatchEvent(new Event('submit')); });
-        qs('#btn-risk').addEventListener('click', () => { qs('#chat-input').value = 'What is my overall risk and how can I reduce drawdowns?'; qs('#chat-form').dispatchEvent(new Event('submit')); });
+        qs('#btn-rebalance').addEventListener('click', () => {
+            qs('#chat-input').value = 'How should I rebalance my portfolio this month?';
+            qs('#chat-form').dispatchEvent(new Event('submit'));
+        });
+        qs('#btn-risk').addEventListener('click', () => {
+            qs('#chat-input').value = 'What is my overall risk and how can I reduce drawdowns?';
+            qs('#chat-form').dispatchEvent(new Event('submit'));
+        });
 
         document.getElementById('year').innerText = new Date().getFullYear();
-        if (token()) { showAuth(false); qs('#btn-logout').classList.remove('hidden'); loadHoldings(); }
+        if (token()) {
+            showAuth(false);
+            qs('#btn-logout').classList.remove('hidden');
+            loadHoldings();
+        } else {
+            qs('#btn-show-login').classList.add('font-semibold');
+        }
     </script>
 </body>
 </html>
