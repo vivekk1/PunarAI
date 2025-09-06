@@ -78,6 +78,54 @@
             border-radius: 0.5rem;
             font-size: 0.875rem;
         }
+         @media (max-width: 640px) {
+        #add-holding-form {
+            grid-template-columns: 1fr !important; /* Single column */
+        }
+
+        #add-holding-form button {
+            width: 100% !important; /* Full width button */
+        }
+
+        #portfolio-summary {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 0.5rem !important;
+        }
+
+        #portfolio-summary div {
+            width: 100%;
+        }
+
+        /* Table horizontal scroll on mobile */
+        #holdings-body, table {
+            display: block !important;
+            overflow-x: auto !important;
+            width: 100% !important;
+        }
+
+        /* Optional: font size smaller */
+        #holdings-body td, #holdings-body th {
+            font-size: 0.75rem !important;
+            padding: 0.5rem !important;
+        }
+    }
+
+    /* Logo adjustment */
+    @media (max-width: 640px) {
+        header div h2, header div .text-xs {
+            font-size: 0.875rem !important;
+        }
+
+        header div h1 {
+            font-size: 1rem !important;
+        }
+
+        header div img {
+            width: 32px !important;
+            height: 32px !important;
+        }
+    }
     </style>
 </head>
 <body class="min-h-screen bg-gradient-to-b from-gray-50 to-white">
@@ -199,7 +247,7 @@
                     </form>
 
                     <div class="mt-5 overflow-hidden rounded-2xl border border-gray-100">
-                        <table class="w-full min-w-[500px] text-sm">
+                        <table class="w-full text-sm">
                             <thead class="bg-gray-50 text-gray-600">
                                 <tr>
                                     <th class="text-left p-3">Symbol</th>
@@ -213,7 +261,7 @@
                             <tbody id="holdings-body" class="divide-y divide-gray-100"></tbody>
                         </table>
                     </div>
-                    <div id="portfolio-summary" class="mt-3 flex flex-col gap-2 text-sm sm:flex-row sm:justify-end sm:gap-4">
+                    <div id="portfolio-summary" class="mt-3 flex justify-end gap-4 text-sm">
                         <div>Invested: ₹<span id="total-invested">0</span></div>
                         <div>Value: ₹<span id="total-value">0</span></div>
                         <div>P/L: <span id="total-pl">₹0</span></div>
@@ -828,6 +876,7 @@
     </script>
 </body>
 </html>
+
 
 
 
