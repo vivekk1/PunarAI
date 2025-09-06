@@ -1,353 +1,697 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="AI Chatbots for Education, Manufacturing, and Restaurant Industries">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="AI Chatbots for Education, Manufacturing, and Restaurant Industries" />
     <title>PunarAI - AI Innovation</title>
     <style>
+        :root {
+            --bg: #1a1a2e;
+            --panel: #16213e;
+            --ink: #ffffff;
+            --brand: #5b9bd5;
+            --accent: #f28c38;
+            --ink-dim: #cccccc;
+        }
+        /* Base */
+        * {
+            box-sizing: border-box
+        }
+
+        html, body {
+            height: 100%
+        }
+
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #1a1a2e;
-            color: #ffffff;
+            font-family: "Segoe UI", Arial, sans-serif;
+            color: var(--ink);
+            background: var(--bg);
             text-align: center;
+            scroll-behavior: smooth;
         }
-        .logo {
+
+        a {
+            color: inherit
+        }
+
+        /* NAVBAR */
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(10,15,42,.88);
+            backdrop-filter: saturate(120%) blur(8px);
+            border-bottom: 1px solid rgba(255,255,255,.06)
+        }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: .6rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            text-decoration: none
+        }
+
+            .brand img {
+                height: 42px;
+                width: auto;
+                display: block;
+                filter: drop-shadow(0 0 8px rgba(162,210,255,.5));
+                border-radius: 50%;
+                background: rgba(10,15,42,.5);
+                padding: 4px
+            }
+
+            .brand span {
+                font-weight: 700;
+                letter-spacing: .5px
+            }
+
+        .nav-toggle {
+            display: none;
+            border: none;
+            background: transparent;
+            color: #fff;
+            font-size: 1.6rem;
+            cursor: pointer
+        }
+
+        .nav-menu {
+            list-style: none;
+            display: flex;
+            gap: 22px;
+            margin: 0;
+            padding: 0;
+            align-items: center
+        }
+
+            .nav-menu > li {
+                position: relative
+            }
+
+            .nav-menu a {
+                color: #fff;
+                text-decoration: none;
+                font-weight: 500;
+                padding: .4rem .2rem;
+                display: inline-block
+            }
+
+                .nav-menu a:hover {
+                    color: var(--accent)
+                }
+
+        /* Dropdown */
+        .submenu {
+            list-style: none;
             position: absolute;
-            top: 10px;
-            left: 10px;
-            width: 100px;
-            height: auto;
-            filter: drop-shadow(0 0 10px rgba(162, 210, 255, 0.7));
-            background: rgba(10, 15, 42, 0.5);
-            border-radius: 50%;
-            padding: 5px;
+            left: 0;
+            top: 100%;
+            background: var(--panel);
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 8px;
+            padding: .5rem;
+            min-width: 180px;
+            display: none;
+            text-align: left
         }
-        @media (max-width: 768px) {
-            .logo {
-                width: 80px;
-                top: 5px;
-                left: 5px;
+
+            .submenu li {
+                margin: .1rem 0
             }
-        }
-        @media (max-width: 480px) {
-            .logo {
-                width: 60px;
-                top: 5px;
-                left: 5px;
+
+            .submenu a {
+                display: block;
+                padding: .5rem .6rem
             }
+
+        .nav-menu > li:hover > .submenu {
+            display: block
         }
+
+        /* BANNER */
         .banner {
+            position: relative;
             width: 100%;
-            height: 400px;
-            background: linear-gradient(135deg, #0a0f2a, #5b9bd5, #f28c38);
+            height: 100vh; /* full screen height */
+            background: linear-gradient(135deg,#005bea,#00c6fb); /* fallback */
+            background-image: url("img/businessbanner.jpg"); /* your image */
+            background-size: cover; /* full cover */
+            background-position: center; /* center focus */
+            background-repeat: no-repeat;
             display: flex;
             justify-content: center;
             align-items: center;
-            position: relative;
+            text-align: center;
+            color: #fff;
         }
+
+            .banner img.banner-inner-img {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: cover; /* full cover image */
+                z-index: 1;
+            }
+
         .banner-content {
+            /*background: rgba(0,0,0,0.4);*/ /* dark overlay for readability */
+            /*padding: 20px;
+            border-radius: 12px;
+            max-width: 800px;*/
+            position: relative;
             z-index: 1;
         }
-        .banner h1 {
-            font-size: 3em;
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
-        }
-        .content {
-            padding: 40px 20px;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-        .contact-section {
-            background-color: #16213e;
-            padding: 40px;
-            margin-top: 40px;
-        }
-        .contact-info p {
-            font-size: 1.1em;
-        }
-        .blog-section {
-            padding: 40px;
-            background-color: #0a0f2a;
-            margin-top: 40px;
-        }
-        .blog-post {
-            max-width: 350px;
-            background-color: #16213e;
-            padding: 15px;
-            border-radius: 5px;
-            margin: 10px auto;
-        }
-        .learn-more {
-            display: inline-block;
-            margin-top: 15px;
-            padding: 10px 20px;
-            background-color: #f28c38;
-            color: #ffffff;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .learn-more:hover {
-            cursor: pointer;
-        }
-        /* Chatbot CSS */
-        .chat-container {
-            position: relative;
-            width: 320px;
-            height: 450px;
-            background: #16213e;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-            display: flex;
-            flex-direction: column;
-            margin: 20px auto;
-        }
-        .chat-header {
-            background: linear-gradient(135deg, #0a0f2a, #5b9bd5);
-            color: #ffffff;
-            padding: 10px;
-            border-radius: 10px 10px 0 0;
-            font-weight: bold;
-            text-align: center;
-        }
-        .chat-messages {
-            flex: 1;
-            padding: 15px;
-            overflow-y: auto;
-            background: #1a1a2e;
-            color: #ffffff;
-        }
-        .chat-input {
-            width: 100%;
-            padding: 10px;
-            border: none;
-            background: #0a0f2a;
-            color: #ffffff;
-            border-top: 1px solid #5b9bd5;
-            border-radius: 0 0 10px 10px;
-            outline: none;
-        }
-        .chat-input::placeholder {
-            color: #cccccc;
-        }
-        .message {
-            margin: 10px;
-            padding: 10px;
-            border-radius: 8px;
-            max-width: 80%;
-            word-wrap: break-word;
-        }
-        .user-message {
-            background: #f28c38;
-            color: #ffffff;
-            margin-left: auto;
-            text-align: right;
-        }
-        .bot-message {
-            background: #5b9bd5;
-            color: #ffffff;
-            margin-right: auto;
-        }
-        .chat-messages::-webkit-scrollbar {
-            width: 6px;
-        }
-        .chat-messages::-webkit-scrollbar-track {
-            background: #0a0f2a;
-        }
-        .chat-messages::-webkit-scrollbar-thumb {
-            background: #5b9bd5;
-            border-radius: 10px;
-        }
-        /* Navbar CSS */
-        nav {
-            background: linear-gradient(135deg, #0a0f2a, #5b9bd5);
-            padding: 10px;
-            position: sticky;
+        .banner::after {
+            content: "";
+            position: absolute;
             top: 0;
-            z-index: 10;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.3));
+            z-index: 0;
         }
-        nav ul {
-            list-style: none;
-            display: flex;
-            justify-content: center;
-            margin: 0;
-            padding: 0;
-        }
-        nav li {
-            margin: 0 15px;
+
+
+        /*.banner {
+            width: 100%;
+            min-height: clamp(360px, 60vh, 540px);
+            display: grid;
+            place-items: center;
             position: relative;
+            overflow: hidden;
+        }*/
+
+           /* .banner::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(135deg,#0a0f2a, var(--brand), var(--accent));
+                filter: saturate(120%)
+            }
+
+        .banner-inner {
+            position: relative;
+            z-index: 1;
+            padding: 48px 16px;
+            max-width: 900px
         }
-        nav a {
+
+        .banner h1 {
+            font-size: clamp(28px, 4.5vw, 56px);
+            margin: 0 0 .3rem;
+            text-shadow: 2px 2px 12px rgba(0,0,0,.55)
+        }
+
+        .banner p {
+            margin: .25rem 0 1rem;
+            font-size: clamp(14px,1.8vw,20px)
+        }
+*/
+        .cta {
+            display: inline-block;
+            margin-top: .5rem;
+            padding: .75rem 1.2rem;
+            background: var(--accent);
             color: #fff;
             text-decoration: none;
-            font-size: 1.1em;
+            border-radius: 10px;
+            font-weight: 700
         }
-        nav a:hover {
-            color: #f28c38;
+
+            .cta:hover {
+                filter: brightness(1.05)
+            }
+
+        /* CONTENT */
+        .content {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: clamp(24px, 4vw, 56px) 16px;
+            text-align: left
         }
-        nav li:hover > ul {
-            display: block;
+
+            .content.center {
+                text-align: center
+            }
+
+            .content h2 {
+                color: var(--brand);
+                text-align: center;
+                margin: 0 0 12px
+            }
+
+            .content p {
+                line-height: 1.65
+            }
+
+        /* CHAT CARDS */
+        .chat-section .grid {
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+            gap: 20px
         }
-        nav ul ul {
-            display: none;
-            position: absolute;
-            background: #16213e;
+
+        @media (max-width: 992px) {
+            .chat-section .grid {
+                grid-template-columns: repeat(2,1fr)
+            }
+        }
+
+        @media (max-width: 640px) {
+            .chat-section .grid {
+                grid-template-columns: 1fr
+            }
+        }
+
+        .chat-card {
+            background: var(--panel);
+            border-radius: 14px;
+            box-shadow: 0 8px 24px rgba(0,0,0,.35);
+            padding: 16px
+        }
+
+            .chat-card h3 {
+                margin: 0 0 .5rem;
+                color: var(--accent);
+                text-align: left
+            }
+
+        .chat-container {
+            width: 100%;
+            height: 420px;
+            background: #0f1733;
+            border-radius: 10px;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #0a0f2a, var(--brand));
             padding: 10px;
-            border-radius: 5px;
-            list-style: none;
-            min-width: 150px;
+            font-weight: 700
         }
-        nav ul ul li {
-            margin: 5px 0;
+
+        .chat-messages {
+            flex: 1;
+            padding: 12px;
+            overflow-y: auto
         }
+
+        .chat-input {
+            border: none;
+            border-top: 1px solid rgba(255,255,255,.08);
+            background: #0a0f2a;
+            color: #fff;
+            padding: 10px;
+            outline: none
+        }
+
+        .message {
+            margin: 8px;
+            padding: 10px;
+            border-radius: 8px;
+            max-width: 80%
+        }
+
+        .user-message {
+            background: var(--accent);
+            margin-left: auto
+        }
+
+        .bot-message {
+            background: var(--brand);
+            margin-right: auto
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 6px
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: var(--brand);
+            border-radius: 8px
+        }
+
+        /* BLOG */
+        .blog-section {
+            background: #0a0f2a
+        }
+
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin-top: 18px
+        }
+
+        @media (max-width: 900px) {
+            .blog-grid {
+                grid-template-columns: repeat(2, 1fr)
+            }
+        }
+
+        @media (max-width: 600px) {
+            .blog-grid {
+                grid-template-columns: 1fr
+            }
+        }
+
+        .blog-post {
+            background: var(--panel);
+            padding: 16px;
+            border-radius: 10px;
+            text-align: left
+        }
+
+            .blog-post h3 {
+                margin: .2rem 0 .3rem;
+                color: var(--accent)
+            }
+
+            .blog-post a {
+                text-decoration: none;
+                color: #cfd8ff
+            }
+
+                .blog-post a:hover {
+                    color: #fff
+                }
+
+        /* PRICING */
+        .pricing .cards {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin-top: 10px
+        }
+
+        @media (max-width: 900px) {
+            .pricing .cards {
+                grid-template-columns: repeat(2, 1fr)
+            }
+        }
+
+        @media (max-width: 600px) {
+            .pricing .cards {
+                grid-template-columns: 1fr
+            }
+        }
+        @media (max-width: 768px) {
+            .banner {
+                height: 70vh;
+            }
+        }
+
+            .price-card {
+                background: var(--panel);
+                border-radius: 12px;
+                padding: 18px;
+                text-align: center;
+                box-shadow: 0 8px 24px rgba(0,0,0,.35)
+            }
+
+                .price-card h3 {
+                    margin: .2rem 0 .4rem
+                }
+
+            .btn {
+                display: inline-block;
+                margin-top: 10px;
+                padding: 10px 16px;
+                background: var(--accent);
+                color: #fff;
+                border-radius: 8px;
+                text-decoration: none;
+                font-weight: 700
+            }
+
+            /* CONTACT & COMING SOON */
+            .contact-section {
+                background: var(--panel);
+                padding: 40px 20px;
+                margin-top: 30px;
+                border-top: 1px solid rgba(255,255,255,.06)
+            }
+
+            .contact-info p {
+                font-size: 1.05rem;
+                margin: .2rem 0
+            }
+
+            .coming-soon-section {
+                padding: 40px 16px
+            }
+
+            /* MOBILE MENU */
+            @media (max-width: 992px) {
+                .nav-toggle {
+                    display: block
+                }
+
+                .nav-menu {
+                    position: absolute;
+                    left: 0;
+                    right: 0;
+                    top: 100%;
+                    background: #0a0f2a;
+                    border-bottom: 1px solid rgba(255,255,255,.08);
+                    display: none;
+                    flex-direction: column;
+                    gap: 0
+                }
+
+                    .nav-menu.open {
+                        display: flex
+                    }
+
+                    .nav-menu > li {
+                        padding: .4rem 1rem
+                    }
+
+                    .nav-menu a {
+                        width: 100%;
+                        text-align: left
+                    }
+
+                    .nav-menu .submenu {
+                        position: static;
+                        display: none;
+                        background: #0f1733;
+                        border-radius: 8px;
+                        margin-top: .4rem
+                    }
+
+                    .nav-menu li.open > .submenu {
+                        display: block
+                    }
+            }
     </style>
 </head>
 <body>
-    <nav>
-        <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li>
-                <a href="#">Industries</a>
-                <ul>
-                    <li><a href="#education">Education</a></li>
-                    <li><a href="#manufacturing">Manufacturing</a></li>
-                    <li><a href="#restaurant">Restaurant</a></li>
-                </ul>
-            </li>
-            <li><a href="Dashboard.html">AI-powered Stock Market Analysis</a></li>
-            <li><a href="#blog">Blog</a></li>
-            <li><a href="#contact">Contact</a></li>
-            <li><a href="#pricing">Pricing</a></li>
-        </ul>
+    <!-- NAV -->
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="#home" class="brand" aria-label="PunarAI Home">
+                <img src="img/PunarAI-logo.png" alt="PunarAI Logo" />
+                <span>PunarAI</span>
+            </a>
+            <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navMenu" aria-label="Toggle menu">☰</button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li>
+                    <a href="#industries" id="industriesLink">Industries</a>
+                    <ul class="submenu">
+                        <li><a href="#education">Education</a></li>
+                        <li><a href="#manufacturing">Manufacturing</a></li>
+                        <li><a href="#restaurant">Restaurant</a></li>
+                    </ul>
+                </li>
+                <li><a href="Dashboard.html">AI-powered Stock Market Analysis</a></li>
+                <li><a href="#blog">Blog</a></li>
+                <li><a href="#pricing">Pricing</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
     </nav>
 
-    <div class="banner">
-        <img src="img/PunarAI-logo.png" alt="PunarAI Logo" class="logo">
+    <!-- HERO / BANNER -->
+    <section class="banner" id="home">
         <div class="banner-content">
             <h1>PunarAI - AI Powered Innovation</h1>
             <p>Transforming the Future with AI</p>
         </div>
-    </div>
-
-    <div class="content" id="about">
+    </section>
+    <!-- ABOUT -->
+    <section class="content center" id="about">
         <h2>About PunarAI</h2>
         <p>
             PunarAI is a platform dedicated to leveraging Artificial Intelligence to solve real-world problems.
             From predictive analytics to automated workflows, we aim to empower businesses and individuals with innovative technology.
         </p>
-        <p>With a vision beyond the stock market, PunarAI is committed to expanding AI solutions across multiple industries, including healthcare, finance, manufacturing, and more. We aspire to revolutionize businesses with intelligent automation and data-driven decision-making.</p>
-        <a href="#contact" class="learn-more">Learn More</a>
-    </div>
+        <p>
+            With a vision beyond the stock market, PunarAI is committed to expanding AI solutions across multiple industries, including healthcare, finance, manufacturing, and more. We aspire to revolutionize businesses with intelligent automation and data-driven decision-making.
+        </p>
+        <a href="#contact" class="btn">Get in Touch</a>
+    </section>
 
-    <div class="content" id="founder-about">
+    <!-- FOUNDER ABOUT -->
+    <section class="content" id="founder-about">
         <h2>About the Founder</h2>
         <p><strong>Vivek Kumar</strong>, the founder of <strong>PunarAI</strong>, is a passionate software consultant and technologist with deep expertise in AI-driven stock market analysis and full-stack web development.</p>
         <p>With a strong background in Blazor WebAssembly, ASP.NET Core, and Python-based AI, Vivek has worked on a wide range of real-world projects—from corporate ERP systems to intelligent market forecasting platforms. He brings a unique blend of technical proficiency, domain understanding, and a problem-solving mindset to the table.</p>
         <p>Driven by a vision to democratize intelligent financial decision-making, he launched <strong>PunarAI</strong> — an innovative platform that leverages Machine Learning and Deep Learning to simplify complex stock market insights for everyday investors.</p>
-        <blockquote style="font-style: italic; border-left: 4px solid #f28c38; padding-left: 15px; color: #ccc; margin: 20px 0;">
+        <blockquote style="font-style: italic; border-left: 4px solid var(--accent); padding-left: 15px; color: #ccc; margin: 20px 0;">
             “Technology should empower clarity, not complexity. With PunarAI, I aim to make financial intelligence accessible to all.” — Vivek Kumar
         </blockquote>
         <p>When he's not coding or experimenting with AI models, Vivek is a curious learner, mentor, and entrepreneur — always exploring ways to bridge technology and real-world needs.</p>
-    </div>
+    </section>
 
-    <div class="content" id="founder-message">
+    <!-- FOUNDER MESSAGE -->
+    <section class="content center" id="founder-message">
         <h2>Founder’s Message</h2>
         <p>At PunarAI, we believe that AI is not just a tool; it is a catalyst for transformation. Businesses that embrace AI will not only optimize efficiency but will also unlock new opportunities for growth and innovation.</p>
         <p>Our vision is to restructure industries by harnessing the power of AI to automate processes, predict trends, and drive intelligent decision-making. The journey has just begun, and we are committed to building AI-driven solutions that empower businesses to stay ahead of the curve.</p>
         <p>Join us in shaping the future of AI-driven enterprises. The possibilities are limitless.</p>
-        <a href="#contact" class="learn-more">Learn More</a>
-    </div>
+        <a href="#contact" class="btn">Learn More</a>
+    </section>
 
-    <div class="content" id="education">
-        <h2>Education Industry Bot</h2>
-        <p>Demo: Ask about student details, courses, or university info.</p>
-        <div class="chat-container" id="chat-container-education">
-            <div class="chat-header">Education Chatbot</div>
-            <div class="chat-messages" id="chat-messages-education"></div>
-            <input type="text" class="chat-input" id="chat-input-education" placeholder="Ask about student details..." onkeypress="if(event.key === 'Enter') sendEducationMessage()">
+    <!-- INDUSTRY CHATBOTS -->
+    <section class="content chat-section" id="industries">
+        <h2>Industry Demo Chatbots</h2>
+        <div class="grid">
+            <!-- Education -->
+            <div class="chat-card" id="education">
+                <h3>Education Industry Bot</h3>
+                <p>Demo: Ask about student details, courses, or university info.</p>
+                <div class="chat-container" id="chat-container-education">
+                    <div class="chat-header">Education Chatbot</div>
+                    <div class="chat-messages" id="chat-messages-education"></div>
+                    <input type="text" class="chat-input" id="chat-input-education" placeholder="Ask about student details..." onkeypress="if(event.key === 'Enter') sendEducationMessage()" />
+                </div>
+                <a href="#pricing" class="btn" style="margin-top:10px">Upgrade to Full Version</a>
+            </div>
+
+            <!-- Manufacturing -->
+            <div class="chat-card" id="manufacturing">
+                <h3>Manufacturing Industry Bot</h3>
+                <p>Demo: Query inventory, production stats, or supply chain insights.</p>
+                <div class="chat-container" id="chat-container-manufacturing">
+                    <div class="chat-header">Manufacturing Chatbot</div>
+                    <div class="chat-messages" id="chat-messages-manufacturing"></div>
+                    <input type="text" class="chat-input" id="chat-input-manufacturing" placeholder="Ask about inventory or production..." onkeypress="if(event.key === 'Enter') sendManufacturingMessage()" />
+                </div>
+                <a href="#pricing" class="btn" style="margin-top:10px">Upgrade to Full Version</a>
+            </div>
+
+            <!-- Restaurant -->
+            <div class="chat-card" id="restaurant">
+                <h3>Restaurant Industry Bot</h3>
+                <p>Demo: Check menu items, reservations, or sales reports.</p>
+                <div class="chat-container" id="chat-container-restaurant">
+                    <div class="chat-header">Restaurant Chatbot</div>
+                    <div class="chat-messages" id="chat-messages-restaurant"></div>
+                    <input type="text" class="chat-input" id="chat-input-restaurant" placeholder="Ask about menu or reservations..." onkeypress="if(event.key === 'Enter') sendRestaurantMessage()" />
+                </div>
+                <a href="#pricing" class="btn" style="margin-top:10px">Upgrade to Full Version</a>
+            </div>
         </div>
-        <a href="#pricing" class="learn-more">Upgrade to Full Version</a>
-    </div>
+    </section>
 
-    <div class="content" id="manufacturing">
-        <h2>Manufacturing Industry Bot</h2>
-        <p>Demo: Query inventory, production stats, or supply chain insights.</p>
-        <div class="chat-container" id="chat-container-manufacturing">
-            <div class="chat-header">Manufacturing Chatbot</div>
-            <div class="chat-messages" id="chat-messages-manufacturing"></div>
-            <input type="text" class="chat-input" id="chat-input-manufacturing" placeholder="Ask about inventory or production..." onkeypress="if(event.key === 'Enter') sendManufacturingMessage()">
-        </div>
-        <a href="#pricing" class="learn-more">Upgrade to Full Version</a>
-    </div>
-
-    <div class="content" id="restaurant">
-        <h2>Restaurant Industry Bot</h2>
-        <p>Demo: Check menu items, reservations, or sales reports.</p>
-        <div class="chat-container" id="chat-container-restaurant">
-            <div class="chat-header">Restaurant Chatbot</div>
-            <div class="chat-messages" id="chat-messages-restaurant"></div>
-            <input type="text" class="chat-input" id="chat-input-restaurant" placeholder="Ask about menu or reservations..." onkeypress="if(event.key === 'Enter') sendRestaurantMessage()">
-        </div>
-        <a href="#pricing" class="learn-more">Upgrade to Full Version</a>
-    </div>
-
-    <div class="content" id="pricing">
+    <!-- PRICING -->
+    <section class="content pricing" id="pricing">
         <h2>Pricing Plans</h2>
-        <p>Free Demo: Try our industry-specific bots above.</p>
-        <p>Pro: ₹999/month - Full access, custom data integration.</p>
-        <p>Enterprise: Contact for quote - Scalable for large teams.</p>
-        <a href="#contact" class="learn-more">Sign Up Now</a>
-    </div>
+        <div class="cards">
+            <div class="price-card"><h3>Free Demo</h3><p>Try our industry-specific bots above.</p></div>
+            <div class="price-card"><h3>Pro: ₹999/month</h3><p>Full access, custom data integration.</p></div>
+            <div class="price-card"><h3>Enterprise</h3><p>Contact for quote - Scalable for large teams.</p></div>
+        </div>
+        <a href="#contact" class="btn">Sign Up Now</a>
+    </section>
 
-    <div class="contact-section" id="contact">
+    <!-- CONTACT -->
+    <section class="contact-section" id="contact">
         <h2>Contact Us</h2>
         <div class="contact-info">
             <p>Email: info@punarai.com</p>
             <p>Phone: +91-9910021039</p>
         </div>
-    </div>
+    </section>
 
-    <div class="coming-soon-section" id="coming-soon">
+    <!-- COMING SOON -->
+    <section class="coming-soon-section" id="coming-soon">
         <h2>🚀 Coming Soon: PunarAI App</h2>
         <p>We are working on something amazing! Our new AI-powered stock market analysis app is launching soon.</p>
         <p>Stay tuned for updates and early access.</p>
-        <a href="Dashboard.html" class="learn-more">Get Notified</a>
-    </div>
+        <a href="Dashboard.html" class="btn">Get Notified</a>
+    </section>
 
-    <div class="blog-section" id="blog">
+    <!-- BLOG -->
+    <section class="content blog-section" id="blog">
         <h2>Blog</h2>
-        <div class="blog-post">
-            <h3>Introduction to AI in Business</h3>
-            <a href="introbl.html"><p>Learn how AI is revolutionizing business operations with predictive analytics.</p></a>
+        <div class="blog-grid">
+            <div class="blog-post">
+                <h3>Introduction to AI in Business</h3>
+                <a href="introbl.html"><p>Learn how AI is revolutionizing business operations with predictive analytics.</p></a>
+            </div>
+            <div class="blog-post">
+                <h3>Future of AI in 2025</h3>
+                <a href="futureai.html"><p>Explore the trends and predictions for AI technology in the coming year.</p></a>
+            </div>
         </div>
-        <div class="blog-post">
-            <h3>Future of AI in 2025</h3>
-            <a href="futureai.html"><p>Explore the trends and predictions for AI technology in the coming year.</p></a>
-        </div>
-    </div>
+    </section>
 
     <script>
+        // Mobile menu toggle
+        const navToggle = document.getElementById('navToggle');
+        const navMenu = document.getElementById('navMenu');
+        navToggle.addEventListener('click', () => {
+            const isOpen = navMenu.classList.toggle('open');
+            navToggle.setAttribute('aria-expanded', isOpen);
+        });
+
+        // Submenu toggle on mobile
+        document.querySelectorAll('.nav-menu > li > a').forEach(a => {
+            const next = a.nextElementSibling;
+            if (next && next.classList && next.classList.contains('submenu')) {
+                a.addEventListener('click', (e) => {
+                    if (window.matchMedia('(max-width: 992px)').matches) {
+                        e.preventDefault();
+                        a.parentElement.classList.toggle('open');
+                    }
+                });
+            }
+        });
+
+        // === Your existing chatbot handlers (kept as-is) ===
         async function sendEducationMessage() {
             const input = document.getElementById('chat-input-education');
             const message = input.value.trim();
             if (!message) return;
-
             const messagesDiv = document.getElementById('chat-messages-education');
             messagesDiv.innerHTML += `<div class="message user-message">${message}</div>`;
             input.value = '';
-
             try {
                 const response = await fetch('https://ee00e579dadd.ngrok-free.app/api/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        rollno: '2013308',
-                        message: message
-                    })
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ rollno: '2013308', message })
                 });
                 const data = await response.json();
                 const reply = data.reply || 'Sorry, something went wrong.';
@@ -362,19 +706,13 @@
             const input = document.getElementById('chat-input-manufacturing');
             const message = input.value.trim();
             if (!message) return;
-
             const messagesDiv = document.getElementById('chat-messages-manufacturing');
             messagesDiv.innerHTML += `<div class="message user-message">${message}</div>`;
             input.value = '';
-
             try {
                 const response = await fetch('https://ee00e579dadd.ngrok-free.app/api/manufacturechat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        empcode: 'EMP101',
-                        message: message
-                    })
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ empcode: 'EMP101', message })
                 });
                 const data = await response.json();
                 const reply = data.reply || 'Sorry, something went wrong.';
@@ -389,19 +727,13 @@
             const input = document.getElementById('chat-input-restaurant');
             const message = input.value.trim();
             if (!message) return;
-
             const messagesDiv = document.getElementById('chat-messages-restaurant');
             messagesDiv.innerHTML += `<div class="message user-message">${message}</div>`;
             input.value = '';
-
             try {
                 const response = await fetch('https://ee00e579dadd.ngrok-free.app/api/restaurantchat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        customer_name: 'default-demo-id',
-                        message: message
-                    })
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ customer_name: 'default-demo-id', message })
                 });
                 const data = await response.json();
                 const reply = data.reply || 'Sorry, something went wrong.';
@@ -414,14 +746,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
