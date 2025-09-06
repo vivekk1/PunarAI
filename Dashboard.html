@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+       
         html, body {
             font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
         }
@@ -34,22 +35,77 @@
         .hidden {
             display: none;
         }
+
+        /* Auto-complete dropdown styles */
+        .autocomplete-container {
+            position: relative;
+        }
+
+        .autocomplete-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #d1d5db;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            z-index: 50;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .autocomplete-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+            .autocomplete-item:hover, .autocomplete-item.selected {
+                background-color: #f3f4f6;
+            }
+
+            .autocomplete-item:last-child {
+                border-bottom: none;
+            }
+
+        .market-ticker {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+        }
     </style>
 </head>
 <body class="min-h-screen bg-gradient-to-b from-gray-50 to-white">
     <!-- Header -->
     <header class="sticky top-0 z-30 bg-white/80 backdrop-blur border-b border-gray-100">
-        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="h-9 w-9 rounded-xl bg-indigo-600 text-white grid place-items-center font-semibold">P</div>
-                <div>
-                    <div class="text-lg font-semibold">Punarai</div>
-                    <div class="text-xs text-gray-500 -mt-1">Portfolio & AI Assistant</div>
+        <div class="max-w-6xl mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="h-9 w-9 rounded-xl bg-indigo-600 text-white grid place-items-center font-semibold"> <img src="img/PunarAI-logo.png" alt="PunarAI Logo" ></div>
+                    <div>
+                        <div class="text-lg font-semibold">Punarai</div>
+                        <div class="text-xs text-gray-500 -mt-1">Portfolio & AI Assistant</div>
+                    </div>
+                </div>
+
+                <!-- Market Indices in Header -->
+                <div class="flex items-center gap-4">
+                    <div class="market-ticker">
+                        <span class="font-medium text-indigo-700">Sensex:</span>
+                        <span id="sensex-header" class="text-gray-700">Loading...</span>
+                    </div>
+                    <div class="market-ticker">
+                        <span class="font-medium text-indigo-700">Nifty:</span>
+                        <span id="nifty-header" class="text-gray-700">Loading...</span>
+                    </div>
+                    <button id="btn-logout" class="btn btn-soft hidden">Logout</button>
                 </div>
             </div>
-            <nav class="flex items-center gap-2">
-                <button id="btn-logout" class="btn btn-soft hidden">Logout</button>
-            </nav>
         </div>
     </header>
 
@@ -74,7 +130,7 @@
                         <label class="block text-sm font-medium text-gray-700">Password</label>
                         <input id="password-login" type="password" class="mt-1 w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500" placeholder="••••••••" required />
                     </div>
-                    <button class="btn btn-primary">Sign in</button>
+                    <button type="submit" class="btn btn-primary">Sign in</button>
                 </form>
             </div>
 
@@ -103,13 +159,28 @@
                         <label class="block text-sm font-medium text-gray-700">Confirm Password</label>
                         <input id="confirm-password" type="password" class="mt-1 w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500" placeholder="••••••••" required />
                     </div>
-                    <button class="btn btn-primary">Register</button>
+                    <button type="submit" class="btn btn-primary">Register</button>
                 </form>
             </div>
         </section>
 
         <!-- Dashboard -->
         <section id="dashboard" class="hidden">
+            <!-- AI Chat Section - Moved to top -->
+            <div class="card p-6 mb-6">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-semibold">AI Portfolio Assistant</h2>
+                    <div class="text-xs text-gray-500">Ask things like: "Should I hold Reliance long term?"</div>
+                </div>
+
+                <div id="chat" class="mt-4 h-[360px] overflow-y-auto bg-gray-50 rounded-2xl p-4 space-y-3 border border-gray-100"></div>
+
+                <form id="chat-form" class="mt-4 flex gap-3">
+                    <input id="chat-input" class="flex-1 rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500" placeholder="Type your question..." />
+                    <button type="submit" class="btn btn-primary">Send</button>
+                </form>
+            </div>
+
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="card p-6 lg:col-span-2">
                     <div class="flex items-center justify-between">
@@ -118,10 +189,13 @@
                     </div>
 
                     <form id="add-holding-form" class="mt-5 grid grid-cols-1 sm:grid-cols-5 gap-3">
-                        <input id="symbol" class="sm:col-span-2 rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g. TCS, RELIANCE, INFY" />
+                        <div class="sm:col-span-2 autocomplete-container">
+                            <input id="symbol" class="w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g. TCS, RELIANCE, INFY" autocomplete="off" />
+                            <div id="symbol-dropdown" class="autocomplete-dropdown hidden"></div>
+                        </div>
                         <input id="qty" type="number" min="1" step="1" class="rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500" placeholder="Qty" />
                         <input id="avgprice" type="number" min="0" step="0.01" class="rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500" placeholder="Avg. Price" />
-                        <button class="btn btn-primary">Add / Update</button>
+                        <button type="submit" class="btn btn-primary">Add / Update</button>
                     </form>
 
                     <div class="mt-5 overflow-hidden rounded-2xl border border-gray-100">
@@ -140,9 +214,9 @@
                         </table>
                     </div>
                     <div id="portfolio-summary" class="mt-3 flex justify-end gap-4 text-sm">
-                        <div>Invested: ₹<span id="total-invested"></span></div>
-                        <div>Value: ₹<span id="total-value"></span></div>
-                        <div>P/L: <span id="total-pl"></span></div>
+                        <div>Invested: ₹<span id="total-invested">0</span></div>
+                        <div>Value: ₹<span id="total-value">0</span></div>
+                        <div>P/L: <span id="total-pl">₹0</span></div>
                     </div>
                 </div>
 
@@ -159,21 +233,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Chatbot Panel -->
-            <div class="card p-6 mt-6">
-                <div class="flex items-center justify-between">
-                    <h2 class="text-xl font-semibold">AI Portfolio Assistant</h2>
-                    <div class="text-xs text-gray-500">Ask things like: "Should I hold Reliance long term?"</div>
-                </div>
-
-                <div id="chat" class="mt-4 h-[360px] overflow-y-auto bg-gray-50 rounded-2xl p-4 space-y-3 border border-gray-100"></div>
-
-                <form id="chat-form" class="mt-4 flex gap-3">
-                    <input id="chat-input" class="flex-1 rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500" placeholder="Type your question..." />
-                    <button class="btn btn-primary">Send</button>
-                </form>
-            </div>
         </section>
     </main>
 
@@ -182,161 +241,174 @@
     </footer>
 
     <script>
-        const API_BASE = "https://781d10627733.ngrok-free.app/api"; // update as needed
+        // Debug console logs
+        console.log('Script loading...');
 
+        const API_BASE = "https://781d10627733.ngrok-free.app/api";
+
+        // Utility functions
         const qs = (s) => document.querySelector(s);
-        const ce = (t, c = "") => { const e = document.createElement(t); if (c) e.className = c; return e; };
+        const ce = (t, c = "") => {
+            const e = document.createElement(t);
+            if (c) e.className = c;
+            return e;
+        };
         const token = () => localStorage.getItem("jwt") || "";
-        const setStatus = (t) => qs('#status').innerText = t;
+        const setStatus = (t) => {
+            const statusEl = qs('#status');
+            if (statusEl) statusEl.innerText = t;
+            console.log('Status:', t);
+        };
+
+        // Popular Indian stocks for auto-search
+        const POPULAR_STOCKS = [
+            'RELIANCE', 'TCS', 'HDFCBANK', 'INFY', 'HINDUNILVR', 'ICICIBANK', 'KOTAKBANK',
+            'BHARTIARTL', 'ITC', 'SBIN', 'LT', 'AXISBANK', 'ASIANPAINT', 'MARUTI', 'HCLTECH',
+            'BAJFINANCE', 'WIPRO', 'ULTRACEMCO', 'SUNPHARMA', 'POWERGRID', 'NESTLEIND', 'TECHM',
+            'TITAN', 'COALINDIA', 'NTPC', 'ONGC', 'ADANIENT', 'JSWSTEEL', 'TATAMOTORS', 'INDUSINDBK',
+            'DRREDDY', 'CIPLA', 'BAJAJFINSV', 'HEROMOTOCO', 'EICHERMOT', 'BRITANNIA', 'DIVISLAB',
+            'APOLLOHOSP', 'BPCL', 'GRASIM', 'TATACONSUM', 'HINDALCO', 'IOC', 'SBILIFE',
+            'HDFCLIFE', 'TATASTEEL', 'GODREJCP', 'M&M', 'BAJAJ-AUTO', 'VEDL', 'ADANIPORTS'
+        ];
+
+        // Auto-complete functionality
+        function setupAutoComplete() {
+            console.log('Setting up autocomplete...');
+            const symbolInput = qs('#symbol');
+            const dropdown = qs('#symbol-dropdown');
+
+            if (!symbolInput || !dropdown) {
+                console.error('Symbol input or dropdown not found');
+                return;
+            }
+
+            let selectedIndex = -1;
+
+            symbolInput.addEventListener('input', function () {
+                const query = this.value.toUpperCase();
+                dropdown.innerHTML = '';
+                selectedIndex = -1;
+
+                if (query.length === 0) {
+                    dropdown.classList.add('hidden');
+                    return;
+                }
+
+                const filteredStocks = POPULAR_STOCKS.filter(stock =>
+                    stock.includes(query)
+                ).slice(0, 8);
+
+                if (filteredStocks.length === 0) {
+                    dropdown.classList.add('hidden');
+                    return;
+                }
+
+                filteredStocks.forEach((stock, index) => {
+                    const item = ce('div', 'autocomplete-item');
+                    item.textContent = stock;
+                    item.addEventListener('click', function () {
+                        symbolInput.value = stock;
+                        dropdown.classList.add('hidden');
+                        selectedIndex = -1;
+                        symbolInput.focus();
+                    });
+                    dropdown.appendChild(item);
+                });
+
+                dropdown.classList.remove('hidden');
+            });
+
+            symbolInput.addEventListener('keydown', function (e) {
+                const items = dropdown.querySelectorAll('.autocomplete-item');
+
+                if (e.key === 'ArrowDown' && items.length > 0) {
+                    e.preventDefault();
+                    if (selectedIndex >= 0) items[selectedIndex].classList.remove('selected');
+                    selectedIndex = selectedIndex < items.length - 1 ? selectedIndex + 1 : 0;
+                    items[selectedIndex].classList.add('selected');
+                } else if (e.key === 'ArrowUp' && items.length > 0) {
+                    e.preventDefault();
+                    if (selectedIndex >= 0) items[selectedIndex].classList.remove('selected');
+                    selectedIndex = selectedIndex > 0 ? selectedIndex - 1 : items.length - 1;
+                    items[selectedIndex].classList.add('selected');
+                } else if (e.key === 'Enter' && selectedIndex >= 0) {
+                    e.preventDefault();
+                    symbolInput.value = items[selectedIndex].textContent;
+                    dropdown.classList.add('hidden');
+                    selectedIndex = -1;
+                } else if (e.key === 'Escape') {
+                    dropdown.classList.add('hidden');
+                    selectedIndex = -1;
+                }
+            });
+
+            // Hide dropdown when clicking outside
+            document.addEventListener('click', function (e) {
+                if (!symbolInput.contains(e.target) && !dropdown.contains(e.target)) {
+                    dropdown.classList.add('hidden');
+                    selectedIndex = -1;
+                }
+            });
+        }
 
         function showAuth(show) {
-            qs('#auth-card').classList.toggle('hidden', !show);
-            qs('#dashboard').classList.toggle('hidden', show);
+            const authCard = qs('#auth-card');
+            const dashboard = qs('#dashboard');
+            if (authCard) authCard.classList.toggle('hidden', !show);
+            if (dashboard) dashboard.classList.toggle('hidden', show);
         }
 
-        function fmt(n) { return new Intl.NumberFormat('en-IN', { maximumFractionDigits: 2 }).format(n); }
+        function fmt(n) {
+            return new Intl.NumberFormat('en-IN', { maximumFractionDigits: 2 }).format(n);
+        }
 
         function chatBubble(text, who) {
+            const chatContainer = qs('#chat');
+            if (!chatContainer) return;
+
             const row = ce('div', 'flex ' + (who === 'me' ? 'justify-end' : 'justify-start'));
             const b = ce('div', 'max-w-[80%] rounded-2xl px-4 py-2 ' + (who === 'me' ? 'bg-indigo-600 text-white' : 'bg-white border border-gray-200'));
-            b.innerText = text; row.appendChild(b); qs('#chat').appendChild(row); qs('#chat').scrollTop = qs('#chat').scrollHeight;
+            b.innerText = text;
+            row.appendChild(b);
+            chatContainer.appendChild(row);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
-        // ------- toggle forms -------
-        qs('#btn-show-login').addEventListener('click', () => {
-            qs('#login-form-container').classList.remove('hidden');
-            qs('#register-form-container').classList.add('hidden');
-            qs('#btn-show-login').classList.add('font-semibold');
-            qs('#btn-show-register').classList.remove('font-semibold');
-        });
-
-        qs('#btn-show-register').addEventListener('click', () => {
-            qs('#register-form-container').classList.remove('hidden');
-            qs('#login-form-container').classList.add('hidden');
-            qs('#btn-show-register').classList.add('font-semibold');
-            qs('#btn-show-login').classList.remove('font-semibold');
-        });
-
-        // ------- login -------
-        qs('#login-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = qs('#email-login').value.trim();
-            const password = qs('#password-login').value;
-            setStatus('Signing in...');
+        // Load market data
+        async function loadMarketData() {
             try {
-                const res = await fetch(`${API_BASE}/auth/login`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'ngrok-skip-browser-warning': 'true'
-                    },
-                    body: JSON.stringify({ email, password })
+                const res = await fetch(`${API_BASE}/market/index`, {
+                    headers: { 'ngrok-skip-browser-warning': 'true' }
                 });
 
-                if (!res.ok) {
-                    throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-                }
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
                 const data = await res.json();
-                if (data.token) {
-                    localStorage.setItem('jwt', data.token);
-                    qs('#me-email').innerText = email;
-                    showAuth(false);
-                    setStatus('Signed in');
-                    qs('#btn-logout').classList.remove('hidden');
-                    await loadHoldings();
-                } else {
-                    alert(data.error || 'Login failed');
-                    setStatus('Idle');
+
+                const sensexEl = qs('#sensex-header');
+                const niftyEl = qs('#nifty-header');
+
+                if (sensexEl && data.sensex) {
+                    const sensexChange = (data.sensex.change * 100).toFixed(2);
+                    const sensexLevel = data.sensex.level.toFixed(2);
+                    sensexEl.innerHTML = `₹${sensexLevel} <span class="${data.sensex.change >= 0 ? 'text-emerald-600' : 'text-rose-600'}">(${sensexChange}%)</span>`;
+                }
+
+                if (niftyEl && data.nifty) {
+                    const niftyChange = (data.nifty.change * 100).toFixed(2);
+                    const niftyLevel = data.nifty.level.toFixed(2);
+                    niftyEl.innerHTML = `₹${niftyLevel} <span class="${data.nifty.change >= 0 ? 'text-emerald-600' : 'text-rose-600'}">(${niftyChange}%)</span>`;
                 }
             } catch (err) {
-                console.error('Login error:', err);
-                setStatus('Login error');
-                alert('Login error: ' + err.message);
+                console.error("Market data error:", err);
+                const sensexEl = qs('#sensex-header');
+                const niftyEl = qs('#nifty-header');
+                if (sensexEl) sensexEl.textContent = 'Error';
+                if (niftyEl) niftyEl.textContent = 'Error';
             }
-        });
+        }
 
-        // ------- register -------
-
-        qs('#register-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const name = qs('#name-register').value.trim();
-            const email = qs('#email-register').value.trim();
-            const mobileNo = qs('#mobile-register').value.trim();
-            const password = qs('#password-register').value;
-            const confirmPassword = qs('#confirm-password').value;
-
-            // Client-side validation
-            if (!name) {
-                alert('Name is required');
-                setStatus('Name is required');
-                return;
-            }
-            if (password !== confirmPassword) {
-                alert('Passwords do not match');
-                setStatus('Passwords do not match');
-                return;
-            }
-            if (password.length < 8) {
-                alert('Password must be at least 8 characters long');
-                setStatus('Password too short');
-                return;
-            }
-            if (!mobileNo.match(/^\+?\d{10,12}$/)) {
-                alert('Enter a valid mobile number (10-12 digits)');
-                setStatus('Invalid mobile number');
-                return;
-            }
-
-            setStatus('Registering...');
-            try {
-                const res = await fetch(`${API_BASE}/auth/register`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'ngrok-skip-browser-warning': 'true'
-                    },
-                    body: JSON.stringify({ name, email, mobileNo, password })
-                });
-
-                if (!res.ok) {
-                    const errorText = await res.text();
-                    throw new Error(`HTTP ${res.status}: ${errorText || 'Unknown error'}`);
-                }
-
-                const data = await res.json();
-                if (data.success || data.message === 'User registered successfully') { // Flexible success check
-                    setStatus('Register successfully');
-                    alert('Registration successful! Please sign in.');
-                    qs('#name-register').value = '';
-                    qs('#email-register').value = '';
-                    qs('#mobile-register').value = '';
-                    qs('#password-register').value = '';
-                    qs('#confirm-password').value = '';
-                    qs('#btn-show-login').click(); // Switch to login form
-                } else {
-                    alert(data.error || 'Registration failed');
-                    setStatus('Registration failed');
-                }
-            } catch (err) {
-
-                console.error('Registration error:', err);
-                setStatus('Registration error');
-                let errorMessage = err.message;
-                if (err.message.includes('Failed to fetch')) {
-                    errorMessage = 'Unable to connect to the server. Please check your internet connection or try again later.';
-                }
-                alert('Registration error: ' + errorMessage);
-            }
-        });
-        qs('#btn-logout').addEventListener('click', () => {
-            localStorage.removeItem('jwt');
-            showAuth(true);
-            qs('#btn-logout').classList.add('hidden');
-            setStatus('Logged out');
-        });
-
-        // ------- holdings -------
+        // Load holdings
         async function loadHoldings() {
             const t = token();
             if (!t) {
@@ -356,22 +428,17 @@
                     }
                 });
 
-                console.log('Response status:', res.status);
-                console.log('Response headers:', res.headers);
-
-                if (!res.ok) {
-                    throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-                }
+                if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
 
                 const text = await res.text();
-                console.log("Raw holdings response:", text.substring(0, 200) + '...');
-
                 if (text.trim().startsWith('<!DOCTYPE')) {
-                    throw new Error('Received HTML instead of JSON - ngrok browser warning issue');
+                    throw new Error('Received HTML instead of JSON');
                 }
 
                 const data = JSON.parse(text);
                 const tbody = qs('#holdings-body');
+                if (!tbody) return;
+
                 tbody.innerHTML = '';
 
                 if (!data.holdings || !data.holdings.length) {
@@ -387,26 +454,34 @@
                     const tr = ce('tr');
                     const pl = h.current_price ? (h.current_price - h.avg_price) * h.quantity : null;
                     tr.innerHTML = `
-                                <td class='p-3 font-medium'>${h.symbol}</td>
-                                <td class='p-3 text-right'>${fmt(h.quantity)}</td>
-                                <td class='p-3 text-right'>₹${fmt(h.avg_price)}</td>
-                                <td class='p-3 text-right'>${h.current_price ? '₹' + fmt(h.current_price) : '-'}</td>
-                                <td class='p-3 text-right'>${pl !== null ? (pl > 0 ? '<span class="text-emerald-600">▲ ₹' : '<span class="text-rose-600">▼ ₹') + fmt(Math.abs(pl)) + '</span>' : '-'}</td>
-                                <td class='p-3 text-right'><button class='btn btn-soft text-xs' data-del='${h.symbol}'>Remove</button></td>
-                            `;
+                            <td class='p-3 font-medium'>${h.symbol}</td>
+                            <td class='p-3 text-right'>${fmt(h.quantity)}</td>
+                            <td class='p-3 text-right hidden sm:table-cell'>₹${fmt(h.avg_price)}</td>
+                            <td class='p-3 text-right'>${h.current_price ? '₹' + fmt(h.current_price) : '-'}</td>
+                            <td class='p-3 text-right'>${pl !== null ? (pl > 0 ? '<span class="text-emerald-600">▲ ₹' : '<span class="text-rose-600">▼ ₹') + fmt(Math.abs(pl)) + '</span>' : '-'}</td>
+                            <td class='p-3 text-right'><button class='btn btn-soft text-xs px-2 py-1' data-del='${h.symbol}'>×</button></td>
+                        `;
                     tbody.appendChild(tr);
 
                     total_invested += h.quantity * h.avg_price;
                     if (h.current_price) total_value += h.quantity * h.current_price;
                 });
 
-                qs('#total-invested').innerText = fmt(total_invested);
-                qs('#total-value').innerText = fmt(total_value);
-                const total_pl = total_value - total_invested;
-                const pl_span = qs('#total-pl');
-                pl_span.innerText = (total_pl > 0 ? '+₹' : (total_pl < 0 ? '-₹' : '₹')) + fmt(Math.abs(total_pl));
-                pl_span.className = total_pl > 0 ? 'text-emerald-600' : (total_pl < 0 ? 'text-rose-600' : 'text-gray-600');
+                // Update summary
+                const investedEl = qs('#total-invested');
+                const valueEl = qs('#total-value');
+                const plEl = qs('#total-pl');
 
+                if (investedEl) investedEl.innerText = fmt(total_invested);
+                if (valueEl) valueEl.innerText = fmt(total_value);
+
+                if (plEl) {
+                    const total_pl = total_value - total_invested;
+                    plEl.innerText = (total_pl > 0 ? '+₹' : (total_pl < 0 ? '-₹' : '₹')) + fmt(Math.abs(total_pl));
+                    plEl.className = total_pl > 0 ? 'text-emerald-600' : (total_pl < 0 ? 'text-rose-600' : 'text-gray-600');
+                }
+
+                // Add delete handlers
                 tbody.querySelectorAll('button[data-del]').forEach(btn => {
                     btn.addEventListener('click', async () => {
                         const sym = btn.getAttribute('data-del');
@@ -427,109 +502,329 @@
                         }
                     });
                 });
+
                 setStatus('Holdings loaded');
             } catch (err) {
-                console.error("Error loading holdings:", err);
+                console.error("Holdings error:", err);
                 setStatus('Error loading');
                 alert('Error loading holdings: ' + err.message);
             }
         }
 
-        // ------- add holding -------
-        qs('#add-holding-form').addEventListener('submit', async e => {
-            e.preventDefault();
-            const symbol = qs('#symbol').value.trim().toUpperCase();
-            const quantity = parseFloat(qs('#qty').value);
-            const avg_price = parseFloat(qs('#avgprice').value);
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('DOM loaded, initializing...');
 
-            if (!symbol || !quantity || !avg_price) {
-                alert('Enter symbol, qty, avg price');
-                return;
-            }
+            // Set year
+            const yearEl = qs('#year');
+            if (yearEl) yearEl.innerText = new Date().getFullYear();
 
-            setStatus('Saving holding...');
-            try {
-                const res = await fetch(`${API_BASE}/portfolio/holding`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token()}`,
-                        'ngrok-skip-browser-warning': 'true'
-                    },
-                    body: JSON.stringify({ symbol, quantity, avg_price })
+            // Toggle forms
+            const btnShowLogin = qs('#btn-show-login');
+            const btnShowRegister = qs('#btn-show-register');
+            const loginContainer = qs('#login-form-container');
+            const registerContainer = qs('#register-form-container');
+
+            if (btnShowLogin && btnShowRegister && loginContainer && registerContainer) {
+                btnShowLogin.addEventListener('click', () => {
+                    loginContainer.classList.remove('hidden');
+                    registerContainer.classList.add('hidden');
+                    btnShowLogin.classList.add('font-semibold');
+                    btnShowRegister.classList.remove('font-semibold');
                 });
 
-                if (!res.ok) {
-                    const errorText = await res.text();
-                    throw new Error(`HTTP ${res.status}: ${errorText}`);
-                }
-
-                const data = await res.json();
-                qs('#symbol').value = '';
-                qs('#qty').value = '';
-                qs('#avgprice').value = '';
-                await loadHoldings();
-                setStatus('Holding saved');
-            } catch (err) {
-                console.error('Save error:', err);
-                setStatus('Save error');
-                alert('Error saving holding: ' + err.message);
-            }
-        });
-
-        // ------- chatbot -------
-        qs('#chat-form').addEventListener('submit', async e => {
-            e.preventDefault();
-            const q = qs('#chat-input').value.trim();
-            if (!q) return;
-
-            chatBubble(q, 'me');
-            qs('#chat-input').value = '';
-            setStatus('Thinking...');
-
-            try {
-                const res = await fetch(`${API_BASE}/agent/analyze`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token()}`,
-                        'ngrok-skip-browser-warning': 'true'
-                    },
-                    body: JSON.stringify({ question: q })
+                btnShowRegister.addEventListener('click', () => {
+                    registerContainer.classList.remove('hidden');
+                    loginContainer.classList.add('hidden');
+                    btnShowRegister.classList.add('font-semibold');
+                    btnShowLogin.classList.remove('font-semibold');
                 });
-
-                if (!res.ok) {
-                    throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-                }
-
-                const data = await res.json();
-                chatBubble(data.reply || (data.error || 'Something went wrong'), 'bot');
-                setStatus('Idle');
-            } catch (err) {
-                console.error('Chat error:', err);
-                setStatus('Chat error');
-                chatBubble('Error in AI response: ' + err.message, 'bot');
             }
-        });
 
-        qs('#btn-refresh').addEventListener('click', loadHoldings);
-        qs('#btn-rebalance').addEventListener('click', () => {
-            qs('#chat-input').value = 'How should I rebalance my portfolio this month?';
-            qs('#chat-form').dispatchEvent(new Event('submit'));
-        });
-        qs('#btn-risk').addEventListener('click', () => {
-            qs('#chat-input').value = 'What is my overall risk and how can I reduce drawdowns?';
-            qs('#chat-form').dispatchEvent(new Event('submit'));
-        });
+            // Login form
+            const loginForm = qs('#login-form');
+            if (loginForm) {
+                loginForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    console.log('Login form submitted');
 
-        document.getElementById('year').innerText = new Date().getFullYear();
-        if (token()) {
-            showAuth(false);
-            qs('#btn-logout').classList.remove('hidden');
-            loadHoldings();
-        } else {
-            qs('#btn-show-login').classList.add('font-semibold');
-        }
+                    const emailInput = qs('#email-login');
+                    const passwordInput = qs('#password-login');
+
+                    if (!emailInput || !passwordInput) {
+                        alert('Form elements not found');
+                        return;
+                    }
+
+                    const email = emailInput.value.trim();
+                    const password = passwordInput.value;
+
+                    if (!email || !password) {
+                        alert('Please fill in all fields');
+                        return;
+                    }
+
+                    setStatus('Signing in...');
+                    try {
+                        const res = await fetch(`${API_BASE}/auth/login`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'ngrok-skip-browser-warning': 'true'
+                            },
+                            body: JSON.stringify({ email, password })
+                        });
+
+                        if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+
+                        const data = await res.json();
+                        if (data.token) {
+                            localStorage.setItem('jwt', data.token);
+                            const emailEl = qs('#me-email');
+                            if (emailEl) emailEl.innerText = email;
+
+                            showAuth(false);
+                            setStatus('Signed in');
+
+                            const logoutBtn = qs('#btn-logout');
+                            if (logoutBtn) logoutBtn.classList.remove('hidden');
+
+                            await loadHoldings();
+                            setupAutoComplete();
+                        } else {
+                            alert(data.error || 'Login failed');
+                            setStatus('Idle');
+                        }
+                    } catch (err) {
+                        console.error('Login error:', err);
+                        setStatus('Login error');
+                        alert('Login error: ' + err.message);
+                    }
+                });
+            }
+
+            // Register form
+            const registerForm = qs('#register-form');
+            if (registerForm) {
+                registerForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+
+                    const name = qs('#name-register')?.value.trim();
+                    const email = qs('#email-register')?.value.trim();
+                    const mobileNo = qs('#mobile-register')?.value.trim();
+                    const password = qs('#password-register')?.value;
+                    const confirmPassword = qs('#confirm-password')?.value;
+
+                    if (!name || !email || !mobileNo || !password || !confirmPassword) {
+                        alert('Please fill in all fields');
+                        return;
+                    }
+
+                    if (password !== confirmPassword) {
+                        alert('Passwords do not match');
+                        return;
+                    }
+
+                    if (password.length < 8) {
+                        alert('Password must be at least 8 characters long');
+                        return;
+                    }
+
+                    setStatus('Registering...');
+                    try {
+                        const res = await fetch(`${API_BASE}/auth/register`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'ngrok-skip-browser-warning': 'true'
+                            },
+                            body: JSON.stringify({ name, email, mobileNo, password })
+                        });
+
+                        if (!res.ok) {
+                            const errorText = await res.text();
+                            throw new Error(`HTTP ${res.status}: ${errorText || 'Unknown error'}`);
+                        }
+
+                        const data = await res.json();
+                        if (data.success || data.message === 'User registered successfully') {
+                            setStatus('Registration successful');
+                            alert('Registration successful! Please sign in.');
+
+                            // Clear form
+                            qs('#name-register').value = '';
+                            qs('#email-register').value = '';
+                            qs('#mobile-register').value = '';
+                            qs('#password-register').value = '';
+                            qs('#confirm-password').value = '';
+
+                            // Switch to login form
+                            if (btnShowLogin) btnShowLogin.click();
+                        } else {
+                            alert(data.error || 'Registration failed');
+                            setStatus('Registration failed');
+                        }
+                    } catch (err) {
+                        console.error('Registration error:', err);
+                        setStatus('Registration error');
+                        let errorMessage = err.message;
+                        if (err.message.includes('Failed to fetch')) {
+                            errorMessage = 'Unable to connect to the server. Please check your internet connection or try again later.';
+                        }
+                        alert('Registration error: ' + errorMessage);
+                    }
+                });
+            }
+
+            // Logout
+            const logoutBtn = qs('#btn-logout');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    localStorage.removeItem('jwt');
+                    showAuth(true);
+                    logoutBtn.classList.add('hidden');
+                    setStatus('Logged out');
+                });
+            }
+
+            // Add holding form
+            const addHoldingForm = qs('#add-holding-form');
+            if (addHoldingForm) {
+                addHoldingForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+
+                    const symbol = qs('#symbol')?.value.trim().toUpperCase();
+                    const quantity = parseFloat(qs('#qty')?.value || 0);
+                    const avg_price = parseFloat(qs('#avgprice')?.value || 0);
+
+                    if (!symbol || !quantity || !avg_price) {
+                        alert('Enter symbol, quantity, and average price');
+                        return;
+                    }
+
+                    setStatus('Saving holding...');
+                    try {
+                        const res = await fetch(`${API_BASE}/portfolio/holding`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token()}`,
+                                'ngrok-skip-browser-warning': 'true'
+                            },
+                            body: JSON.stringify({ symbol, quantity, avg_price })
+                        });
+
+                        if (!res.ok) {
+                            const errorText = await res.text();
+                            throw new Error(`HTTP ${res.status}: ${errorText}`);
+                        }
+
+                        // Clear form
+                        qs('#symbol').value = '';
+                        qs('#qty').value = '';
+                        qs('#avgprice').value = '';
+
+                        await loadHoldings();
+                        setStatus('Holding saved');
+                    } catch (err) {
+                        console.error('Save error:', err);
+                        setStatus('Save error');
+                        alert('Error saving holding: ' + err.message);
+                    }
+                });
+            }
+
+            // Chat form
+            const chatForm = qs('#chat-form');
+            if (chatForm) {
+                chatForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+
+                    const chatInput = qs('#chat-input');
+                    if (!chatInput) return;
+
+                    const q = chatInput.value.trim();
+                    if (!q) return;
+
+                    chatBubble(q, 'me');
+                    chatInput.value = '';
+                    setStatus('Thinking...');
+
+                    try {
+                        const res = await fetch(`${API_BASE}/agent/analyze`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token()}`,
+                                'ngrok-skip-browser-warning': 'true'
+                            },
+                            body: JSON.stringify({ question: q })
+                        });
+
+                        if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+
+                        const data = await res.json();
+                        chatBubble(data.reply || (data.error || 'Something went wrong'), 'bot');
+                        setStatus('Idle');
+                    } catch (err) {
+                        console.error('Chat error:', err);
+                        setStatus('Chat error');
+                        chatBubble('Error in AI response: ' + err.message, 'bot');
+                    }
+                });
+            }
+
+            // Shortcut buttons
+            const refreshBtn = qs('#btn-refresh');
+            const rebalanceBtn = qs('#btn-rebalance');
+            const riskBtn = qs('#btn-risk');
+
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', loadHoldings);
+            }
+
+            if (rebalanceBtn) {
+                rebalanceBtn.addEventListener('click', () => {
+                    const chatInput = qs('#chat-input');
+                    if (chatInput) {
+                        chatInput.value = 'How should I rebalance my portfolio this month?';
+                        const chatForm = qs('#chat-form');
+                        if (chatForm) chatForm.dispatchEvent(new Event('submit'));
+                    }
+                });
+            }
+
+            if (riskBtn) {
+                riskBtn.addEventListener('click', () => {
+                    const chatInput = qs('#chat-input');
+                    if (chatInput) {
+                        chatInput.value = 'What is my overall risk and how can I reduce drawdowns?';
+                        const chatForm = qs('#chat-form');
+                        if (chatForm) chatForm.dispatchEvent(new Event('submit'));
+                    }
+                });
+            }
+
+            // Check if already logged in
+            if (token()) {
+                console.log('User already logged in');
+                showAuth(false);
+                const logoutBtn = qs('#btn-logout');
+                if (logoutBtn) logoutBtn.classList.remove('hidden');
+                loadHoldings();
+                setupAutoComplete();
+            } else {
+                console.log('User not logged in');
+                if (btnShowLogin) btnShowLogin.classList.add('font-semibold');
+            }
+
+            // Load market data
+            loadMarketData();
+            // Auto refresh market data every 1 minute
+            setInterval(loadMarketData, 60000);
+
+            console.log('Initialization complete');
+        });
     </script>
 </body>
 </html>
