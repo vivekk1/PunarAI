@@ -437,13 +437,13 @@
                 const niftyEl = qs('#nifty-header');
 
                 if (sensexEl && data.sensex) {
-                    const sensexChange = (data.sensex.change * 100).toFixed(2);
+                    const sensexChange = (data.sensex.change).toFixed(2);
                     const sensexLevel = data.sensex.level.toFixed(2);
                     sensexEl.innerHTML = `₹${sensexLevel} <span class="${data.sensex.change >= 0 ? 'text-emerald-600' : 'text-rose-600'}">(${sensexChange}%)</span>`;
                 }
 
                 if (niftyEl && data.nifty) {
-                    const niftyChange = (data.nifty.change * 100).toFixed(2);
+                    const niftyChange = (data.nifty.change).toFixed(2);
                     const niftyLevel = data.nifty.level.toFixed(2);
                     niftyEl.innerHTML = `₹${niftyLevel} <span class="${data.nifty.change >= 0 ? 'text-emerald-600' : 'text-rose-600'}">(${niftyChange}%)</span>`;
                 }
@@ -876,6 +876,7 @@
     </script>
 </body>
 </html>
+
 
 
 
