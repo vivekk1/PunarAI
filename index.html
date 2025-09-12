@@ -659,6 +659,7 @@
     </section>
 
     <script>
+        const API_BASE = "https://97b09e148748.ngrok-free.app/api";
         // Mobile menu toggle
         const navToggle = document.getElementById('navToggle');
         const navMenu = document.getElementById('navMenu');
@@ -689,7 +690,7 @@
             messagesDiv.innerHTML += `<div class="message user-message">${message}</div>`;
             input.value = '';
             try {
-                const response = await fetch('https://ee00e579dadd.ngrok-free.app/api/chat', {
+                const response = await fetch(`${API_BASE}/api/chat`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ rollno: '2013308', message })
                 });
@@ -710,7 +711,7 @@
             messagesDiv.innerHTML += `<div class="message user-message">${message}</div>`;
             input.value = '';
             try {
-                const response = await fetch('https://ee00e579dadd.ngrok-free.app/api/manufacturechat', {
+                const response = await fetch(`${API_BASE}/manufacturechat`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ empcode: 'EMP101', message })
                 });
@@ -731,7 +732,7 @@
             messagesDiv.innerHTML += `<div class="message user-message">${message}</div>`;
             input.value = '';
             try {
-                const response = await fetch('https://ee00e579dadd.ngrok-free.app/api/restaurantchat', {
+                const response = await fetch(`${API_BASE}/restaurantchat`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ customer_name: 'default-demo-id', message })
                 });
