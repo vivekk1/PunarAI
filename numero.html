@@ -41,10 +41,20 @@ function callAPI() {
     return;
   }
 
-    fetch(`https://b8033a6cbf58.ngrok-free.app/numerology?dob=${dob}`)
-    .then(res => res.json())
+  fetch(`https://9c36faf0ec67.ngrok-free.app/numerology?dob=${dob}`, {
+    headers: {
+        "ngrok-skip-browser-warning": "true"
+    }
+})
+    .then(res => {
+        if (!res.ok) throw new Error("HTTP error");
+        return res.json();
+    })
     .then(data => renderGrid(data.grid, data.destiny))
-    .catch(err => alert("API not reachable"));
+    .catch(err => {
+        console.error(err);
+        alert("API not reachable");
+    });
 }
 
 function renderGrid(grid, destiny) {
@@ -69,3 +79,4 @@ function renderGrid(grid, destiny) {
 
 </body>
 </html>
+
