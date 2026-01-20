@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Numerology Mahadasha Grid</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .controls {
+            margin-bottom: 20px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 70px);
+            gap: 5px;
+        }
+
+        .cell {
+            border: 1px solid #444;
+            height: 70px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .natal {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .destiny {
+            color: green;
+            font-weight: bold;
+        }
+
+        .mahadasha {
+            color: purple;
+            font-size: 22px; 
+            position: absolute;
+            bottom: 6px;
+            right: 8px;
+            font-weight: bold;
+            opacity: 0.9;
+        }
+
+        .year-block {
+            display: inline-block;
+            margin: 12px;
+            vertical-align: top;
+        }
+
+        .year-title {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="controls">
+        <input  id="dob" type="date" placeholder="DD-MM-YYYY">
+        <button onclick="loadMahadasha()">Generate</button>
+    </div>
+
+    <div id="output"></div>
+
+    <script>
+        /* grid fixed order */
+        const GRID_ORDER = [3, 1, 9, 6, 7, 5, 2, 8, 4];
+
+        function loadMahadasha() {
+            const d = document.getElementById("dob").value;
+            if (!d) {
+                alert("Select DOB");
+                return;
+            }
+
+            const [y, m, da] = d.split("-");
+            const dob = `${da}-${m}-${y}`;
+
+            fetch(`https://9c36faf0ec67.ngrok-free.app/numerology-mahadasha?dob=${dob}`, {
+                headers: {
+                    "ngrok-skip-browser-warning": "true"
+                }
+            })
+                .then(res => res.json())
+                .then(renderAllGrids)
+                .catch(() => alert("API not reachable"));
+        }
+
+        function renderAllGrids(data) {
+            const container = document.getElementById("output");
+            container.innerHTML = "";
+
+            data.mahadasha.forEach(item => {
+                container.appendChild(
+                    createYearGrid(item.year, item.mahadasha, data.grid, data.destiny)
+                );
+            });
+        }
+        function getNumberByPosition(r, c) {
+            const map = [
+                [3, 1, 9],
+                [6, 7, 5],
+                [2, 8, 4]
+            ];
+            return map[r][c];
+        }
+
+        function createYearGrid(year, dasha, natalGrid, destiny) {
+            const block = document.createElement("div");
+            block.className = "year-block";
+
+            const title = document.createElement("div");
+            title.className = "year-title";
+            title.innerText = year;   // ✅ DOB start year correct
+            block.appendChild(title);
+
+            const grid = document.createElement("div");
+            grid.className = "grid";
+
+            for (let r = 0; r < 3; r++) {
+                for (let c = 0; c < 3; c++) {
+
+                    const cell = document.createElement("div");
+                    cell.className = "cell";
+
+                    const cellValue = natalGrid[r][c];
+
+                    /* natal number (ONLY once) */
+                    //if (cellValue !== "") {
+                    //    cell.innerHTML = `<span class="natal">${cellValue}</span>`;
+                    //}
+                    if (cellValue !== "" && Number(cellValue) !== destiny) {
+                        cell.innerHTML = `<span class="natal">${cellValue}</span>`;
+                    }
+                    /* destiny ONLY at center (7 position) */
+                    //if (r === 1 && c === 1) {
+                    //    cell.innerHTML += `<span class="destiny">${destiny}</span>`;
+                    //}
+                    const cellNumber = getNumberByPosition(r, c);
+
+                    /* destiny in its OWN column */
+                    if (cellNumber === destiny) {
+                        cell.innerHTML += `<span class="destiny">${destiny}</span>`;
+                    }
+                    /* mahadasha overlay */
+                    if (dasha === getNumberByPosition(r, c)) {
+                        cell.innerHTML += `<span class="mahadasha">${dasha}</span>`;
+                    }
+
+                    grid.appendChild(cell);
+                }
+            }
+
+            block.appendChild(grid);
+            return block;
+        }
+    </script>
+
+</body>
+</html>
