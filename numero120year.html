@@ -59,6 +59,15 @@
             font-weight: bold;
             margin-bottom: 5px;
         }
+        .personal-year {
+            color: orange;
+            font-size: 20px;
+            position: absolute;
+            top: 6px;
+            right: 8px;
+            font-weight: bold;
+        }
+
     </style>
 </head>
 
@@ -98,10 +107,13 @@
         function renderAllGrids(data) {
             const container = document.getElementById("output");
             container.innerHTML = "";
-
+            const personalYearMap = {};
+            data.personal_years.forEach(p => {
+                personalYearMap[p.year] = p.personal_year;
+            });
             data.mahadasha.forEach(item => {
                 container.appendChild(
-                    createYearGrid(item.year, item.mahadasha, data.grid, data.destiny)
+                    createYearGrid(item.year, item.mahadasha, personalYearMap[item.year], data.grid, data.destiny)
                 );
             });
         }
@@ -114,7 +126,7 @@
             return map[r][c];
         }
 
-        function createYearGrid(year, dasha, natalGrid, destiny) {
+        function createYearGrid(year, dasha, personalYear, natalGrid, destiny) {
             const block = document.createElement("div");
             block.className = "year-block";
 
@@ -154,6 +166,10 @@
                     /* mahadasha overlay */
                     if (dasha === getNumberByPosition(r, c)) {
                         cell.innerHTML += `<span class="mahadasha">${dasha}</span>`;
+                    }
+                    /* personal year overlay (ORANGE) */
+                    if (personalYear === getNumberByPosition(r, c)) {
+                        cell.innerHTML += `<span class="personal-year">${personalYear}</span>`;
                     }
 
                     grid.appendChild(cell);
