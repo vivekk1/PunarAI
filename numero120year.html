@@ -210,13 +210,17 @@
                     const cellValue = natalGrid[r][c];
                     const cellNumber = getNumberByPosition(r, c);
 
-                    if (cellValue !== "" && Number(cellValue) !== destiny) {
-                        cell.innerHTML += `<span class="natal">${cellValue}</span>`;
-                    }
+                    if (cellValue !== "") {
+    cell.innerHTML += renderNatalWithDestiny(cellValue, destiny);
+}
 
-                    if (cellNumber === destiny) {
-                        cell.innerHTML += `<span class="destiny">${destiny}</span>`;
-                    }
+/* destiny overlay ONLY if destiny digit NOT in natal string */
+if (
+    cellNumber === destiny &&
+    (!cellValue || !cellValue.includes(String(destiny)))
+) {
+    cell.innerHTML += `<span class="destiny">${destiny}</span>`;
+}
 
                     if (cellNumber === dasha) {
                         cell.innerHTML += `<span class="mahadasha">${dasha}</span>`;
@@ -233,7 +237,28 @@
             block.appendChild(grid);
             return block;
         }
+
+            function renderNatalWithDestiny(natalValue, destiny) {
+        const d = String(destiny);
+
+        if (!natalValue.includes(d)) {
+            return `<span class="natal">${natalValue}</span>`;
+        }
+
+        let used = false;
+        return natalValue
+            .split("")
+            .map(ch => {
+                if (ch === d && !used) {
+                    used = true;
+                    return `<span class="destiny">${ch}</span>`;
+                }
+                return `<span class="natal">${ch}</span>`;
+            })
+            .join("");
+    }
     </script>
 
 </body>
 </html>
+
