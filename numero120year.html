@@ -134,14 +134,22 @@
             }
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
 </head>
 
 <body>
 
     <div class="controls">
-        <input id="dob" type="date">
+        <input id="dob" type="date" required>
+
+        <input id="fromYear" type="number" placeholder="From Year">
+        <input id="toYear" type="number" placeholder="To Year">
+
         <button onclick="loadMahadasha()">Generate</button>
+        <button onclick="downloadPDF()">Download PDF</button>
     </div>
+
 
     <div id="output"></div>
 
@@ -149,9 +157,12 @@
         const GRID_ORDER = [3, 1, 9, 6, 7, 5, 2, 8, 4];
 
         function loadMahadasha() {
-            const d = document.getElementById("dob").value;
+            const dobInput = document.getElementById("dob");
+            const d = dobInput.value;
+
             if (!d) {
-                alert("Select DOB");
+                alert("Please select Date of Birth");
+                dobInput.focus();
                 return;
             }
 
@@ -170,10 +181,20 @@
             const container = document.getElementById("output");
             container.innerHTML = "";
 
+            const fromYear = Number(document.getElementById("fromYear").value);
+            const toYear = Number(document.getElementById("toYear").value);
+
             const personalYearMap = {};
-            data.personal_years.forEach(p => personalYearMap[p.year] = p.personal_year);
+            data.personal_years.forEach(p => {
+                personalYearMap[p.year] = p.personal_year;
+            });
 
             data.mahadasha.forEach(item => {
+
+                /* APPLY YEAR FILTER */
+                if (fromYear && item.year < fromYear) return;
+                if (toYear && item.year > toYear) return;
+
                 container.appendChild(
                     createYearGrid(
                         item.year,
@@ -184,6 +205,10 @@
                     )
                 );
             });
+
+            if (!container.children.length) {
+                container.innerHTML = "<p style='text-align:center;color:#6b7280'>No data for selected range</p>";
+            }
         }
 
         function getNumberByPosition(r, c) {
@@ -210,18 +235,24 @@
                     const cellValue = natalGrid[r][c];
                     const cellNumber = getNumberByPosition(r, c);
 
+                    //if (cellValue !== "" && Number(cellValue) !== destiny) {
+                    //    cell.innerHTML += `<span class="natal">${cellValue}</span>`;
+                    //}
+
+                    //if (cellNumber === destiny) {
+                    //    cell.innerHTML += `<span class="destiny">${destiny}</span>`;
+                    //}
                     if (cellValue !== "") {
-    cell.innerHTML += renderNatalWithDestiny(cellValue, destiny);
-}
+                        cell.innerHTML += renderNatalWithDestiny(cellValue, destiny);
+                    }
 
-/* destiny overlay ONLY if destiny digit NOT in natal string */
-if (
-    cellNumber === destiny &&
-    (!cellValue || !cellValue.includes(String(destiny)))
-) {
-    cell.innerHTML += `<span class="destiny">${destiny}</span>`;
-}
-
+                    /* destiny overlay ONLY if destiny digit NOT in natal string */
+                    if (
+                        cellNumber === destiny &&
+                        (!cellValue || !cellValue.includes(String(destiny)))
+                    ) {
+                        cell.innerHTML += `<span class="destiny">${destiny}</span>`;
+                    }
                     if (cellNumber === dasha) {
                         cell.innerHTML += `<span class="mahadasha">${dasha}</span>`;
                     }
@@ -238,27 +269,52 @@ if (
             return block;
         }
 
-            function renderNatalWithDestiny(natalValue, destiny) {
-        const d = String(destiny);
+        function renderNatalWithDestiny(natalValue, destiny) {
+            const d = String(destiny);
 
-        if (!natalValue.includes(d)) {
-            return `<span class="natal">${natalValue}</span>`;
+            if (!natalValue.includes(d)) {
+                return `<span class="natal">${natalValue}</span>`;
+            }
+
+            let used = false;
+            return natalValue
+                .split("")
+                .map(ch => {
+                    if (ch === d && !used) {
+                        used = true;
+                        return `<span class="destiny">${ch}</span>`;
+                    }
+                    return `<span class="natal">${ch}</span>`;
+                })
+                .join("");
+        }
+        function downloadPDF() {
+            const dob = document.getElementById("dob").value;
+            if (!dob) {
+                alert("Please select DOB before downloading PDF");
+                return;
+            }
+
+            const element = document.getElementById("output");
+
+            if (!element.children.length) {
+                alert("No data to export");
+                return;
+            }
+
+            const opt = {
+                margin: 8,
+                filename: `Numerology_Mahadasha_${dob}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(element).save();
         }
 
-        let used = false;
-        return natalValue
-            .split("")
-            .map(ch => {
-                if (ch === d && !used) {
-                    used = true;
-                    return `<span class="destiny">${ch}</span>`;
-                }
-                return `<span class="natal">${ch}</span>`;
-            })
-            .join("");
-    }
+
     </script>
 
 </body>
 </html>
-
