@@ -6,85 +6,52 @@
     <title>Numerology Mahadasha Grid</title>
 
     <style>
-        :root {
-            --border: #d1d5db;
-            --bg: #f9fafb;
-            --card: #ffffff;
-            --primary: #4f46e5;
-            --destiny: #16a34a;
-            --mahadasha: #7c3aed;
-            --personal: #f59e0b;
-        }
-
         body {
-            margin: 0;
-            padding: 15px;
-            font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
-            background: var(--bg);
+            font-family: Arial, sans-serif;
+            background: #f5f7fa;
         }
 
-        /* ---------- Controls ---------- */
         .controls {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
-            justify-content: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
-            .controls input,
-            .controls button {
-                padding: 10px 14px;
-                font-size: 15px;
-                border-radius: 8px;
-                border: 1px solid var(--border);
-            }
-
-            .controls button {
-                background: var(--primary);
-                color: #fff;
-                border: none;
-                cursor: pointer;
-            }
-
-                .controls button:hover {
-                    opacity: 0.9;
-                }
-
-        /* ---------- Output Layout ---------- */
         #output {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 16px;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 14px;
         }
 
-        /* ---------- Year Card ---------- */
+        /* ===== Year Card ===== */
         .year-block {
-            background: var(--card);
-            border-radius: 12px;
-            padding: 12px;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.06);
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.15);
         }
 
+        /* Green header */
         .year-title {
+            background: #2e7d32;
+            color: #fff;
             text-align: center;
-            font-weight: 600;
-            margin-bottom: 10px;
-            font-size: 16px;
-            color: #111827;
+            font-weight: bold;
+            padding: 6px 0;
+            font-size: 14px;
         }
 
-        /* ---------- Grid ---------- */
+        /* ===== 3x3 Grid ===== */
         .grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 6px;
+            border-top: 1px solid #ccc;
         }
 
         .cell {
-            aspect-ratio: 1 / 1;
-            border: 1px solid var(--border);
-            border-radius: 8px;
+            height: 52px;
+            border: 1px solid #ccc;
             position: relative;
             display: flex;
             align-items: center;
@@ -92,35 +59,39 @@
             background: #fff;
         }
 
-        /* ---------- Numbers ---------- */
+        /* ===== Numbers ===== */
+
+        /* Natal numbers (grey) */
         .natal {
-            font-size: 18px;
-            font-weight: 600;
-            color: #374151;
+            color: #666;
+            font-size: 14px;
+            font-weight: 500;
         }
 
+        /* Destiny (green) */
         .destiny {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--destiny);
-        }
-
-        .mahadasha {
-            position: absolute;
-            bottom: 6px;
-            right: 6px;
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--mahadasha);
-        }
-
-        .personal-year {
-            position: absolute;
-            top: 6px;
-            right: 6px;
+            color: #2e7d32;
+            font-weight: bold;
             font-size: 16px;
-            font-weight: 700;
-            color: var(--personal);
+        }
+
+        /* Mahadasha (purple) */
+        .mahadasha {
+            color: #7b1fa2;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* Personal year (orange) */
+        .personal-year {
+            color: #f57c00;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        /* Multiple numbers spacing */
+        .cell span {
+            margin: 0 1px;
         }
 
         /* ---------- Mobile tweaks ---------- */
