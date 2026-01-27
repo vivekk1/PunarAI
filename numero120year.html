@@ -93,6 +93,22 @@
         .cell span {
             margin: 0 1px;
         }
+        .monthly {
+            color: #1565c0; /* blue */
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .monthly-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 14px;
+        }
+
+            /* 🔴 IMPORTANT FIX */
+            .monthly-grid .year-block {
+                width: auto; /* full width hatao */
+                max-width: 200px; /* card size control */
+            }
 
         /* ---------- Mobile tweaks ---------- */
         @media (max-width: 480px) {
@@ -125,12 +141,17 @@
     <div id="output"></div>
 
     <script>
+        let CURRENT_NATAL_GRID = null;
+        let CURRENT_DESTINY = null;
+        let CURRENT_PERSONAL_YEAR = null;
+        let CURRENT_MAHADASHA = null;
         const GRID_ORDER = [3, 1, 9, 6, 7, 5, 2, 8, 4];
 
         function loadMahadasha() {
             const dobInput = document.getElementById("dob");
             const d = dobInput.value;
-
+            const container = document.getElementById("output");
+            container.style.display = "grid";
             if (!d) {
                 alert("Please select Date of Birth");
                 dobInput.focus();
@@ -149,6 +170,8 @@
         }
 
         function renderAllGrids(data) {
+            CURRENT_NATAL_GRID = data.grid;
+            CURRENT_DESTINY = data.destiny;
             const container = document.getElementById("output");
             container.innerHTML = "";
 
@@ -193,8 +216,8 @@
         function createYearGrid(year, dasha, personalYear, natalGrid, destiny) {
             const block = document.createElement("div");
             block.className = "year-block";
-
-            block.innerHTML = `<div class="year-title">${year}-${year + 1}</div>`;
+            block.setAttribute("data-year", year);
+            block.innerHTML = `<div class="year-title" onclick="openMonthly(${year}, ${personalYear}, ${dasha})">${year}-${year + 1}</div>`;
             const grid = document.createElement("div");
             grid.className = "grid";
 
@@ -284,9 +307,101 @@
             html2pdf().set(opt).from(element).save();
         }
 
+        function openMonthly(year, personalYear, mahadasha) {
+            //alert('hi');
+            
+            const dob = document.getElementById("dob").value;
+            const [y, m, d] = dob.split("-");
+            const dobFormatted = `${d}-${m}-${y}`;
+            CURRENT_PERSONAL_YEAR = personalYear;
+            CURRENT_MAHADASHA = mahadasha;
+
+            fetch(`https://9c36faf0ec67.ngrok-free.app/numerology-monthly?dob=${dobFormatted}&year=${year}&personal_year=${personalYear}`, {
+                headers: { "ngrok-skip-browser-warning": "true" }
+            })
+                .then(res => res.json())
+            .then(renderMonthlyGrid);
+        }
+
+        function renderMonthlyGrid(data) {
+            const container = document.getElementById("output");
+            container.style.display = "block"; 
+            container.innerHTML = `
+        <button onclick="loadMahadasha()">⬅ Back to Years</button>
+        <div class="monthly-grid"
+             style="display:grid;
+                    grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+                    gap:14px">
+        </div>
+    `;
+
+            const gridContainer = container.querySelector(".monthly-grid");
+
+            data.forEach(item => {
+
+                const block = document.createElement("div");
+                block.className = "year-block";
+
+                block.innerHTML = `
+            <div class="year-title">
+                ${item.from} → ${item.to}
+            </div>
+        `;
+
+                const grid = document.createElement("div");
+                grid.className = "grid";
+
+                for (let r = 0; r < 3; r++) {
+                    for (let c = 0; c < 3; c++) {
+
+                        const cell = document.createElement("div");
+                        cell.className = "cell";
+
+                        const cellValue = CURRENT_NATAL_GRID[r][c];
+                        const cellNumber = getNumberByPosition(r, c);
+
+                        /* Natal + Destiny */
+                        if (cellValue !== "") {
+                            cell.innerHTML += renderNatalWithDestiny(
+                                cellValue,
+                                CURRENT_DESTINY
+                            );
+                        }
+
+                        if (
+                            cellNumber === CURRENT_DESTINY &&
+                            (!cellValue || !cellValue.includes(String(CURRENT_DESTINY)))
+                        ) {
+                            cell.innerHTML += `<span class="destiny">${CURRENT_DESTINY}</span>`;
+                        }
+
+                        /* 🟣 MAHADASHA */
+                        if (cellNumber === CURRENT_MAHADASHA) {
+                            cell.innerHTML += `<span class="mahadasha">${CURRENT_MAHADASHA}</span>`;
+                        }
+
+                        /* 🟠 PERSONAL YEAR */
+                        if (cellNumber === CURRENT_PERSONAL_YEAR) {
+                            cell.innerHTML += `<span class="personal-year">${CURRENT_PERSONAL_YEAR}</span>`;
+                        }
+
+                        /* 🔵 MONTHLY DASHA */
+                        if (cellNumber === item.dasha) {
+                            cell.innerHTML += `<span class="monthly">${item.dasha}</span>`;
+                        }
+
+                        grid.appendChild(cell);
+                    }
+                }
+
+                block.appendChild(grid);
+                gridContainer.appendChild(block);
+            });
+        }
+
+      
 
     </script>
 
 </body>
 </html>
-
