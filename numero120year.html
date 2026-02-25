@@ -161,7 +161,7 @@
             const [y, m, da] = d.split("-");
             const dob = `${da}-${m}-${y}`;
 
-            fetch(`https://9c36faf0ec67.ngrok-free.app/numerology-mahadasha?dob=${dob}`, {
+            fetch(`https://3c1b-49-249-117-22.ngrok-free.app/numerology-mahadasha?dob=${dob}`, {
                 headers: { "ngrok-skip-browser-warning": "true" }
             })
                 .then(res => res.json())
@@ -316,7 +316,7 @@
             CURRENT_PERSONAL_YEAR = personalYear;
             CURRENT_MAHADASHA = mahadasha;
 
-            fetch(`https://9c36faf0ec67.ngrok-free.app/numerology-monthly?dob=${dobFormatted}&year=${year}&personal_year=${personalYear}`, {
+            fetch(`https://3c1b-49-249-117-22.ngrok-free.app/numerology-monthly?dob=${dobFormatted}&year=${year}&personal_year=${personalYear}`, {
                 headers: { "ngrok-skip-browser-warning": "true" }
             })
                 .then(res => res.json())
@@ -405,3 +405,4 @@
 
 </body>
 </html>
+
